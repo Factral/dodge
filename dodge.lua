@@ -1,5 +1,5 @@
  -- #Dodge Transformice
-    --script hecho por factral#0000 , creditos a Deadjerry y maik005 por el dodge origina
+    --script hecho por factral#0000 , creditos a Deadjerry y maik005
  
     
     
@@ -146,9 +146,9 @@
                --dar ganador al final de el cumulo de rondas
                
                  if rondaFinal and countdown ==3 then
-                  tfm.exec.newGame(7815400)
-                  tfm.exec.setGameTime(25)                
+                  tfm.exec.newGame(7815400)                            
                   ui.addTextArea(6, "<p align='center'><font color='#ffe300' size='14'><b>".. campeon.. "</font><N> Ha ganado!" , final , 200, 30, 400, 23,0x373737,0x373737)
+                  tfm.exec.setGameTime(25)
                   tfm.exec.movePlayer(campeon,400,210)
                  end
  
@@ -263,9 +263,15 @@ function eventChatCommand(name,command)
                                 ui.addTextArea(26,"<p align='center'><b>Vuelve a escribir el comando.</b></a></p>",final,2,383,270,16,0,0,0,true)
                          end
                           if asa*1000 >=3000 then
+                            if bool then
+                              ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+                                ui.addTextArea(26,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
+                                end
+                            if not bool then
                             ui.removeTextArea(25,final)
                             ui.removeTextArea(26,final)
                             EjecutarMapa()
+                            end
                         end
                     end
                   end
@@ -320,7 +326,6 @@ function eventChatCommand(name,command)
              if asa*1000 >=3000 then
                       modoCrono=false
                       invidual=false
-                      muertoJugadorCrono=false
                       ui.removeTextArea(7,final)
                        ui.removeTextArea(22,final)
                        ui.removeTextArea(23,final)
