@@ -36,7 +36,7 @@
     players = {}
     winer = {}
     IDList = {}
-    maps={7813846,7813847,7814210,7815341,7814864,7814091,7816146,7816244,7817457}
+    maps={7813846,7813847,7814210,7815341,7814864,7814091,7816146,7816244}
     cannones={17,1701,1702,1703,1705,1706,1707,1708,1709,1710,1711,1712,1714,1715,1718,1719,1720,1721}
         
     
@@ -283,11 +283,7 @@ function eventChatCommand(name,command)
                      end
                     
                     if command=="crono" then
-                     if asa*1000 <=3000 then
-                       ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-                        ui.addTextArea(26,"<p align='center'><b>Vuelve a escribir el comando.</b></a></p>",final,2,383,270,16,0,0,0,true)
-                      end
-                     if asa*1000 >=3000 then
+                                        if asa*1000 >=3000 then
                        ui.removeTextArea(25,final)
                        ui.removeTextArea(26,final)
                         reiniciartodo()
@@ -318,22 +314,37 @@ function eventChatCommand(name,command)
                    
                    if command=="estandar" then
                    
-                     if i>=2 then
-                     if asa*1000 <=3000 then
-                               ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-             ui.addTextArea(26,"<p align='center'><b>Vuelve a escribir el comando.</b></a></p>",final,2,383,270,16,0,0,0,true)
-             end
+             
+             if i>=2 then
              if asa*1000 >=3000 then
+             reiniciartodo() 
                       modoCrono=false
-                      invidual=false
+                      modoIndividual=false
+                   muertoJugadorCrono=false
                       ui.removeTextArea(7,final)
                        ui.removeTextArea(22,final)
                        ui.removeTextArea(23,final)
                         ui.removeTextArea(25,final)
                        ui.removeTextArea(26,final)
-                      reiniciartodo()    
+                         
                     end                
+              end
+              
+              if i==1 then
+              if asa*1000 >=3000 then
+              reiniciartodo()  
+                      modoCrono=false
+                      modoIndividual=true
+                   muertoJugadorCrono=false
+                      ui.removeTextArea(7,final)
+                       ui.removeTextArea(22,final)
+                       ui.removeTextArea(23,final)
+                        ui.removeTextArea(25,final)
+                       ui.removeTextArea(26,final)
+                        
                     end
+                end
+              
                     
                     end
                     
@@ -476,12 +487,9 @@ function eventTextAreaCallback(id,name,callback)
      for id=25,33 do
      ui.removeTextArea(id,final)
      end
-        if i>=2 then
+        
             eventChatCommand(name,"estandar")
-        else 
-            EjecutarMapa()
-            end
-        end
+              end
     
   
   elseif callback=="modocrono" then
