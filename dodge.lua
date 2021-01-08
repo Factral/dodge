@@ -25,7 +25,7 @@
                   "<p align='center'><font size='25'><bv>Modos</bv></font></p><br><br><p align='left'><font size='13' color='#CF7B7B'>Modo estándar:</font> Es el modo que se ejecuta de forma predeterminada, se divide en 7 rondas y el que mas haya sobrevivido en el total de rondas es el ganador, esta habilitado el doble salto durante el modo dios  <br><br><font size='13' color='#CF7B7B'>Modo crono:</font>Es un modo para contabilizar el tiempo que sobrevives en un mapa determinado, al morir automáticamente te dará el tiempo es segundos que has sobrevivido. Para ponerlo simplemente pon el comando  <font color='#BBCF7B'>!crono</font>  <br><br><font size='13' color='#CF7B7B'>Modo individual:</font> Este modo solo se ejecuta cuando hay una persona en la sala</p>",
                     },
             comandos={
-"<p align='center'><font size='25'><bv>Comandos</bv></font></p><br><br><p align='left'> <b><font color='#EFF0EE'>!np</font></b> cambia de mapa (disponible durante los primeros 25 segundos)<br><br><font color='#EFF0EE'>!modos</font> muestra los modos disponibles<br><br><font color='#EFF0EE'>!help</font> despliega este menu<br><br><font color='#EFF0EE'>!restart</font> reinicia las rondas desde 1 (disponible al finalizar todas las rondas)<br><br><font color='#EFF0EE'>!redo</font> comando para reiniciar el tiempo (disponible en modo crono)</p>",
+"<p align='center'><font size='25'><bv>Comandos</bv></font></p><br><p align='left'> <b><font color='#EFF0EE'>!np</font></b> cambia de mapa (disponible durante los primeros 25 segundos)<br><br><font color='#EFF0EE'>!modos</font> muestra los modos disponibles<br><br><font color='#EFF0EE'>!restart</font> reinicia las rondas desde 1 (disponible al finalizar todas las rondas)<br><br><font color='#EFF0EE'>!redo</font> comando para reiniciar el tiempo (disponible en modo crono)</p><br><p align='center'><font size='25'><bv>Teclas</bv></font></p><br><p align='left'><font color='#EFF0EE'>L </font>: muestra la clasificacion en el modo estandar </p>",
                     },
             creditos={
 "<p align='center'><font size='25'><bv>Creditos</bv></font></p><br><br>El rediseño de Dodge es desarrollado por mi, <font color='#7BCFC5'>Factral#0000</font>, he aprendido mucho sobre <font color='#CFA97B'>lua</font> mientras lo desarrollaba y mi intención nunca ha sido que este proyecto sea similar a algún modulo oficial, simplemente lo hice por diversión y aprender un poco de <font color='#CFA97B'>lua.</font><br><br><br>Gracias especiales a <font color='#7BCFC5'>Jp_darkuss#4806</font>  y <font color='#7BCFC5'>Mundialpross#0000</font> por ayudar con parte del codigo y ideas con el diseño</p>",
@@ -43,7 +43,7 @@
     
     
     primeraEjecucion=true;  rondaFinal=false;   bool=false; modoIndividual=false;       modoCrono=false;        muertoJugadorCrono=false;   
-    countdown = 0;  playersAlive=0; count = 0;      jump = 5;       can=0;  dios=0; diagonal = 0;   contador=0; timer=0;    help=0; mins=0; 
+    countdown = 0;  playersAlive=0; count = 0;      jump = 5;       can=0;  dios=0; diagonal = 0;   timer=0;    help=0; mins=0; 
     seconds=0;      wait = 0;   numeroRonda=1;
  
  
@@ -70,7 +70,12 @@
                     bool = false
                     countdown = 0
                     dios = 0             
-                     contador=0
+                     
+                ui.removeTextArea(99,name)
+                if lea==1 then
+                     eventChatCommand(name,"lea")
+                     lea=1
+                end
         end
     end
     
@@ -256,6 +261,18 @@ end
  
 function eventChatCommand(name,command)
                    
+                   if command== "lea" then
+                   	if not modoCrono and not primeraEjecucion then
+                    	local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"
+                    
+  					for name, player in pairs(tfm.get.room.playerList) do
+      			  		leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
+    					end
+				 ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true)
+ 				end
+                   end
+                   
+                   
                    if command== "np" then
                       if  not muertoJugadorCrono then
                          if asa*1000 <=3000 then
@@ -282,7 +299,7 @@ function eventChatCommand(name,command)
                      end
                      end
                     
-                    if command=="crono" then
+                    if command=="modocrono" then
                                         if asa*1000 >=3000 then
                        ui.removeTextArea(25,final)
                        ui.removeTextArea(26,final)
@@ -312,7 +329,7 @@ function eventChatCommand(name,command)
                      end
                    end
                    
-                   if command=="estandar" then
+                   if command=="modoestandar" then
                    
              
              if i>=2 then
@@ -387,6 +404,7 @@ function eventChatCommand(name,command)
                     end
 end
                     
+                    lea=0
                     
 function eventKeyboard(name,key,down,x,y)
             if dios >=99 and not modoCrono then
@@ -402,13 +420,24 @@ function eventKeyboard(name,key,down,x,y)
                 help=help+1
             end
             
+            if key==76 then     
+            eventChatCommand(name,"lea")
+            lea=lea+1
+            end
+            
             if help==2 then
                 for id=12,17 do
                     ui.removeTextArea(id,name)
                 end
               help=0
             end
-                        
+            
+            if lea>=2 then
+            ui.removeTextArea(99,name)
+            lea=0
+            end
+            
+                               
 end
                     
                     
@@ -423,10 +452,19 @@ end
 function eventNewPlayer(name)
             players[name] = {
                 score = 0,
-                helpid=1
+                helpid=1,
+                nombre=name
             }
     ui.addTextArea(10,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,779,387,17,12,0x030200,0x2a291a,nil,true)
     ui.addTextArea(11,"<p align='center'><a href='event:help'><b><font color='#FFFFFF'>?</font></b></a></p>",name,780,383,16,16,0,0,0,true)
+     
+      
+      for name in pairs(tfm.get.room.playerList) do
+    for keys, k in pairs({32, 72, 76}) do
+       tfm.exec.bindKeyboard(name, k, true, true)
+    end
+end
+
 end
     
     
@@ -439,11 +477,6 @@ end
 darscore()
         
         
-for name in pairs(tfm.get.room.playerList) do
-    for keys, k in pairs({32, 72}) do
-       tfm.exec.bindKeyboard(name, k, true, true)
-    end
-end
     
     
 function eventTextAreaCallback(id,name,callback)
@@ -488,7 +521,7 @@ function eventTextAreaCallback(id,name,callback)
      ui.removeTextArea(id,final)
      end
         
-            eventChatCommand(name,"estandar")
+            eventChatCommand(name,"modoestandar")
               end
     
   
@@ -503,7 +536,7 @@ function eventTextAreaCallback(id,name,callback)
      ui.removeTextArea(id,final)
    end
      end
-  eventChatCommand(name,"crono")
+  eventChatCommand(name,"modocrono")
   
   elseif callback=="cerrar" then
    for id=25,33 do
@@ -671,7 +704,8 @@ end
  
  
 for name, player in pairs(tfm.get.room.playerList) do
-            eventNewPlayer(name)            
+            eventNewPlayer(name)      
+       
 end
  
  
