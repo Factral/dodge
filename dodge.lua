@@ -153,8 +153,11 @@
                  if rondaFinal and countdown ==3 then
                   tfm.exec.newGame(7815400)                            
                   ui.addTextArea(6, "<p align='center'><font color='#ffe300' size='14'><b>".. campeon.. "</font><N> Ha ganado!" , final , 200, 30, 400, 23,0x373737,0x373737)
-                  tfm.exec.setGameTime(25)
-                  tfm.exec.movePlayer(campeon,400,210)
+                  tfm.exec.setGameTime(25)                
+                  for i=1, 50 do
+			tfm.exec.displayParticle(math.random(21,24), math.random(1,800), 20, math.random(-20,20)/100, math.random(10,1000)/100, 0, 0, nil)
+			end
+			 tfm.exec.movePlayer(campeon,400,210)
                  end
  
  
