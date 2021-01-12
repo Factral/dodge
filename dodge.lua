@@ -15,6 +15,7 @@
       system.disableChatCommandDisplay("modos")
  
      print("<img src='https://i.imgur.com/CsIOXFg.png' /><br /><br /><br /><br /><br /> <br>")
+     print("<br><p align='left'><font color='#638071'>[DODGE] </font><font color='#7CD499'>Welcome to </font><b><font color='#D2EC16'>#dodge </font></b><font color='#7CD499'>survive the cannons!<br>Plase Type</br> <b><font color='#33AA74'>!help</font></b> to show more information about this. </font><font color='#7CD499'>see the project repository here:</font><b><font color='#33AA74'>https://github.com/Factral/dodge</font></b></p>")
  
      boxes={
         help={
@@ -115,7 +116,7 @@
                 end
                 --modio dios
                 if dios == 80 then
-                    tfm.exec.setUIMapName("<YELLOW>#dodge by factral| Modo Dios En Unos Segundos ... .. . .. . ")
+                      tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font> <N> Modo Dios En Unos Segundos.... ... .. .")
                 end
                 if dios == 100 then
                     local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
@@ -123,7 +124,11 @@
                     idCannon=picked_value
                 end
                 if dios >= 100 and not modoCrono then
-                    tfm.exec.setUIMapName("<YELLOW>#dodge by factral        <N>Ronda: <V>"..numeroRonda.."/7      <N>Modo: <V>Estandar")
+                    if  modoIndividual then
+                   	 tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Individual")
+                    else
+                   	 tfm.exec.setUIMapName("<YELLOW>#dodge by factral        <N>Ronda: <V>"..numeroRonda.."/7      <N>Modo: <V>Estandar")
+                    end
                     tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
                     tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
                 end
@@ -566,7 +571,7 @@ function eventPlayerDied(name)
                 bool = true
                 winned= true
                 tfm.exec.setGameTime(5)
-                tfm.exec.setUIMapName("<YELLOW>#dodge by factral  |  Cambiando De Mapa.....")
+                tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font>  <N>Cambiando De Mapa.....")
                 --eliminar cañones
                  for idCannon, object in pairs(tfm.get.room.objectList) do
                     table.insert(IDList, idCannon)
@@ -580,8 +585,8 @@ function eventPlayerDied(name)
             if playersAlive  == 0 and not rondaFinal     then
                 bool = true
                 tfm.exec.setGameTime(5)
-                tfm.exec.setUIMapName("<YELLOW>#dodge by factral  |  Cambiando De Mapa.....")
-                --eliminar cañones
+                tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font>  <N>Cambiando De Mapa.....")
+                                --eliminar cañones
                   for idCannon, object in pairs(tfm.get.room.objectList) do
                     table.insert(IDList, idCannon)
                    end
