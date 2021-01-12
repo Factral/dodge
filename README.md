@@ -18,6 +18,6 @@ You can run this game in #castle rooms _(`/room #castle0dodge`)_
 
 or
  
-<b>open the file <a href="https://github.com/Factral/dodge/blob/main/dodge.lua">dodge.lua</a> and copy the code to run it in a tribe house.</b>
+open the file <a href="https://github.com/Factral/dodge/blob/main/dodge.lua">dodge.lua</a> and copy the code to run it in a tribe house.
 
 
