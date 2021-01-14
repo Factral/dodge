@@ -61,6 +61,7 @@
           tfm.exec.newGame(7818703)
           tfm.exec.setUIMapName("<YELLOW>#dodge by factral           ")
             tfm.exec.setGameTime(1)
+            tfm.exec.addImage("176ffe7f496.png", ":1", xCoordinate, yCoordinate, nil)
           end        
          if not primeraEjecucion then
             local valuee = math.random(1,#maps) -- Get random number with 1 to length of table.
