@@ -64,6 +64,7 @@
             tfm.exec.addImage("176ffe7f496.png", ":1", xCoordinate, yCoordinate, nil)
           end        
          if not primeraEjecucion then
+            tfm.exec.removeImage(1)
             local valuee = math.random(1,#maps) -- Get random number with 1 to length of table.
             local picked_valuee = maps[valuee] -- Pick value from table
             codigoMapa = picked_valuee
