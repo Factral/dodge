@@ -10,6 +10,9 @@
     tfm.exec.disableAutoTimeLeft(true)  
     tfm.exec.setGameTime(0)
     tfm.exec.disableAutoScore(true)
+    tfm.exec.disableMinimalistMode()
+    tfm.exec.disableMortCommand()
+    tfm.exec.disablePhysicalConsumables()
  
      system.disableChatCommandDisplay("help")
       system.disableChatCommandDisplay("modos")
