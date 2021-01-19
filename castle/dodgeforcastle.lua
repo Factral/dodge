@@ -1,4 +1,4 @@
- -- #Dodge Transformice
+-- #Dodge Transformice
     --script hecho por factral#0000 , creditos a Deadjerry y maik005
  
     
@@ -64,10 +64,8 @@
           tfm.exec.newGame(7818703)
           tfm.exec.setUIMapName("<YELLOW>#dodge by factral           ")
             tfm.exec.setGameTime(1)
-            tfm.exec.addImage("176ffe7f496.png", ":1", xCoordinate, yCoordinate, nil)
           end        
          if not primeraEjecucion then
-            tfm.exec.removeImage(1)
             local valuee = math.random(1,#maps) -- Get random number with 1 to length of table.
             local picked_valuee = maps[valuee] -- Pick value from table
             codigoMapa = picked_valuee
@@ -191,16 +189,17 @@
                 
             can = can + 1
                 if can <= 10 then
-                --creditos para Deadjerry y maik005 en esta parte
+                    --creditos para Deadjerry y maik005 en esta parte
                     face="Soopafresh";
-                size="120";
-                game="#Dodge";
-                color="#E7DB25";
+                    --[[size="120";
+                    game="#Dodge";
+                    color="#E7DB25";
                     ui.addTextArea(1, "<BR><B><p align='center'><font face='"..face.."' size='"..size.."' color='#000000'><BR>"..game, p, 10, -30, 790, 400, 1, 1, 0.0, false)
                     ui.addTextArea(2, "<BR><B><p align='center'><font face='"..face.."' sdize='"..size.."' color='#000000'><BR>"..game, p, 0, -30, 790, 400, 1, 1, 0.0, false)
                     ui.addTextArea(3, "<BR><B><p align='center'><font face='"..face.."' size='"..size.."' color='#EAA118'><BR>"..game, p, 5, -35, 790, 400, 1, 1, 0.0, false)
                     ui.addTextArea(4, "<BR><B><p align='center'><font face='"..face.."' size='"..size.."' color='#000000'><BR>"..game, p, 5, -25, 790, 400, 1, 1, 0.0, false)
-                    ui.addTextArea(5, "<BR><B><p align='center'><font face='"..face.."' size='"..size.."' color='"..color.."'><BR>"..game, p, 5, -30, 790, 400, 1, 1, 0.0, false)
+                    ui.addTextArea(5, "<BR><B><p align='center'><font face='"..face.."' size='"..size.."' color='"..color.."'><BR>"..game, p, 5, -30, 790, 400, 1, 1, 0.0, false)]]
+                    system.newTimer(tfm.exec.removeImage end, 1000, false, tfm.exec.addImage("176ffe7f496.png", ":1", 270, 150, nil))
                 else if can >= 11 then  
                     for i = 1,5 do
                         ui.removeTextArea(i, p)
