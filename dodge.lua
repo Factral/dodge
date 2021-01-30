@@ -2,7 +2,6 @@
     --script hecho por factral#0000 , creditos a Deadjerry y maik005
  
     
-    
     tfm.exec.disableAutoNewGame(true)
     tfm.exec.disableAutoShaman(true)
     tfm.exec.disableAfkDeath(true)
@@ -10,8 +9,8 @@
     tfm.exec.disableAutoTimeLeft(true)  
     tfm.exec.setGameTime(0)
     tfm.exec.disableAutoScore(true)
-    tfm.exec.disableMinimalistMode()
-    tfm.exec.disableMortCommand()
+    tfm.exec.disableMinimalistMode()  
+    tfm.exec.disableMortCommand() 
     tfm.exec.disablePhysicalConsumables()
  
      system.disableChatCommandDisplay("help")
@@ -42,16 +41,42 @@
     IDList = {}
     maps={7813846,7813847,7814210,7815341,7814864,7814091,7816146,7816244}
     cannones={17,1701,1702,1703,1705,1706,1707,1708,1709,1710,1711,1712,1714,1715,1718,1719,1720,1721}
-        
-    
-    
-    
-    primeraEjecucion=true;  rondaFinal=false;   bool=false; modoIndividual=false;       modoCrono=false;        muertoJugadorCrono=false;   
+    specialcannons={ 
+    {"Star of death", "1502f9cb9a8"};    {"Balanced", "149af0fdbf7"};  {"Plate spike", "149af0ef041"};   {"Diamon ore", "149af129a4c"};
+    --{"idontknow", "165ee55ef37"};
+    {"baffbot", "149af1482f5"};    {"girly", "149aeabeff6"};    {"disturbed eye", "149aeaab097"};    {"cow", "149af1414ae"};    {"magma", "149aea9f2cc"};    {"demon", "149aeab32ec"};
+    --{"batty", "1755667fcc7"};
+    {"shymer", "175c88cf5bd"};    {"contest", "149aeac1f50"};
+    --{"spiky", "149af145222"};
+    {"sweet", "149aeac07ee"};    {"cookie", "149af11f084"};    {"drop the boss", "149af134d03"};    {"troll", "149af11af76"};    {"venom", "16ebc8b35de"};    {"nocturnal", "17045bccc54"};    {"cardistry", "169550c8e43"};    {"sharingan", "16943972c4a"};    {"lollipop", "1693eb4fc8b"};    {"oblivion", "172576581a4"};   {"energon", "166216a1a33"};   {"metal plates", "1660c17bb0e"};   {"bronze", "149af130a30"};   {"silver", "149af12c2d6"};    {"vermilion", "1705dfa253d"};
+   --{"warrior", "175c83a20b9"};
+    {"target", "175db7c6a9a"};    {"water", "1660c65740f"};    {"air", "1660c5db325"};    {"flame", "1660c4bf1a4"};    {"nature", "149af13faa2"};    {"recycle", "149aeaaf47a"};    {"vine", "149af122bb3"};    {"music", "149af146cb6"};
+}
+       
+    cannonesespeciales = false;    cambiocannones=0;   cann=1;    sett=0; primeraEjecucion=true;  rondaFinal=false;   bool=false; modoIndividual=false;       modoCrono=false;        muertoJugadorCrono=false;   
     countdown = 0;  playersAlive=0; count = 0;      jump = 5;       can=0;  dios=0; diagonal = 0;   timer=0;    help=0; mins=0; 
     seconds=0;      wait = 0;   numeroRonda=1;
+
+
+    function actualizarcuadro()
+     local textcannonesespeciales = "<font color='#B1B0B0' size='13' align='center' face='Ubuntu'>  Cañones Deathmatch     </font>"
+     local rand_can_txt = cannonesespeciales and "<font color='#63da0b' size='15' align='center' face='Ubuntu'>☑</font>" or "<font color='#727272' size='15' align='center' face='Ubuntu'>☐</font>"
+     settings = "<p align='center'><font color='#ffffff' size='13' align='center' face='Ubuntu'>Settings</font></p><br/>"..textcannonesespeciales.."<a href='event:cannonesespeciales'>"..rand_can_txt.."</a><br>"
+     ui.addTextArea(95, settings, name, 290,145, 200, 110, 0x171616, 0x555555, 0.9, true)
+     ui.removeTextArea(99,name); lea=0
+    end
+
  
  
-    
+    function generarCannonId()
+      
+       cann = math.random (1,35)                   
+ 	   local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
+       local picked_value = cannones[value] -- Pick value from table
+       idCannon=picked_value
+    end
+
+
     function verjugadores()
     i=0
           for k,v in pairs(tfm.get.room.playerList) do
@@ -61,6 +86,7 @@
     
     
     function EjecutarMapa()
+    	cambiocannones=0
         if primeraEjecucion then
           tfm.exec.newGame(7818703)
           tfm.exec.setUIMapName("<YELLOW>#dodge by factral           ")
@@ -75,7 +101,7 @@
                     countdown = 0
                     dios = 0             
                      
-                ui.removeTextArea(99,name)
+                ui.removeTextArea(99,name);ui.removeTextArea(101,name);ui.removeTextArea(102,name)
                 if lea==1 then
                      eventChatCommand(name,"lea")
                      lea=1
@@ -83,16 +109,8 @@
         end
     end
     
-    
- 
-        
-            
-    
-    
-    
-    
-    
     local Load= function(time, remaining)
+      
       asa=time/1000
       timer=asa
        jump = jump+1
@@ -104,17 +122,26 @@
         if not primeraEjecucion then
             
             if not bool and not rondaFinal and time >= 6000 and time <=50000 then
-                tfm.exec.addShamanObject(idCannon, 820, math.random(150,380), math.random(-135, -45), 0, 0, false)
+               shootedcannon= tfm.exec.addShamanObject(idCannon, 820, math.random(150,380), math.random(-135, -45), 0, 0, false)
+               if cannonesespeciales then
+               tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon,-16,-16,nil)
+          		 end
             end
             
         
             if not bool and not rondaFinal and time >= 8000 then
                 if count > 10 and dios <=100 then
                     --tfm.exec.addShamanObject(4, 810, 0, 90)
-                    tfm.exec.addShamanObject(idCannon, -10, 200, 180)
+                    shootedcannon1 = tfm.exec.addShamanObject(idCannon, -10, 200, 180)
+                    if cannonesespeciales then
+               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon1,-16,-16,nil)
+          		 end
                     count = 0
                 elseif diagonal >= 14 then
-                    tfm.exec.addShamanObject(idCannon, 110, 100, math.random(-160, -120))
+                    shootedcannon2 = tfm.exec.addShamanObject(idCannon, 110, 100, math.random(-160, -120))
+                    if cannonesespeciales then
+               			tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon2,-16,-16,nil)
+          			 end
                     diagonal = 0
                 end
                 --modio dios
@@ -122,24 +149,29 @@
                       tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font> <N> Modo Dios En Unos Segundos.... ... .. .")
                 end
                 if dios == 100 then
-                    local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
-                    local picked_value = cannones[value] -- Pick value from table
-                    idCannon=picked_value
+                   generarCannonId()
                 end
                 if dios >= 100 and not modoCrono then
                     if  modoIndividual then
-                   	 tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Individual")
+                     tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Individual")
                     else
-                   	 tfm.exec.setUIMapName("<YELLOW>#dodge by factral        <N>Ronda: <V>"..numeroRonda.."/7      <N>Modo: <V>Estandar")
+                     tfm.exec.setUIMapName("<YELLOW>#dodge by factral        <N>Ronda: <V>"..numeroRonda.."/7      <N>Modo: <V>Estandar")
                     end
-                    tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
-                    tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
+                    shootedcannon4 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
+                    shootedcannon5 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
+                    if cannonesespeciales then
+               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
+               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
+          		 end
                 end
                 if dios >= 100 and  modoCrono then
                 tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Crono")
-                    tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
-                    tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
-                
+                    shootedcannon4 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
+                    shootedcannon5 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
+                 if cannonesespeciales then
+               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
+               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
+          		 end
                 end
             end
                 
@@ -163,9 +195,9 @@
                   ui.addTextArea(6, "<p align='center'><font color='#ffe300' size='14'><b>".. campeon.. "</font><N> Ha ganado!" , final , 200, 30, 400, 23,0x373737,0x373737)
                   tfm.exec.setGameTime(25)                
                   for i=1, 50 do
-			tfm.exec.displayParticle(math.random(21,24), math.random(1,800), 20, math.random(-20,20)/100, math.random(10,1000)/100, 0, 0, nil)
-			end
-			 tfm.exec.movePlayer(campeon,400,210)
+      tfm.exec.displayParticle(math.random(21,24), math.random(1,800), 20, math.random(-20,20)/100, math.random(10,1000)/100, 0, 0, nil)
+      end
+       tfm.exec.movePlayer(campeon,400,210)
                  end
  
  
@@ -213,6 +245,14 @@
     local winned= false
     function eventLoop(time,remaining)
             if not winned then
+            	if cambiocannones>=3 then
+            	Wait= Wait + 500
+            	 if Wait>= 3500 then
+                    Wait= 0
+                    ui.removeTextArea(101,name)
+                    ui.removeTextArea(102,name)
+                end
+                end
                 Load(time, remaining)
             else
                 Wait= Wait + 500
@@ -220,6 +260,7 @@
                     Wait= 0
                     finish()
                 end
+
             end
     end
     
@@ -272,15 +313,20 @@ end
  
 function eventChatCommand(name,command)
                    
+                  if command=="settings" then
+                    actualizarcuadro()
+                  end
+
                    if command== "lea" then
-                   	if not modoCrono and not primeraEjecucion then
-                    	local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"
+                    if not modoCrono and not primeraEjecucion then
+                      local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"
                     
-  					for name, player in pairs(tfm.get.room.playerList) do
-      			  		leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
-    					end
-				 ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true)
- 				end
+            for name, player in pairs(tfm.get.room.playerList) do
+                  leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
+              end
+              ui.removeTextArea(95,name)
+         ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true);sett=0
+        end
                    end
                    
                    
@@ -418,6 +464,12 @@ end
                     lea=0
                     
 function eventKeyboard(name,key,down,x,y)
+
+            if key==79 then
+              eventChatCommand(name,"settings")
+              sett=sett+1
+            end
+           
             if dios >=99 and not modoCrono then
                 if jump >= 5 then
                     if key == 32 then
@@ -448,18 +500,17 @@ function eventKeyboard(name,key,down,x,y)
             lea=0
             end
             
+            if sett==2 then
+            ui.removeTextArea(95,name)
+            sett=0
+            end
                                
-end
-                    
-                    
-                    
+end                 
                     
   if primeraEjecucion then
     eventChatCommand(name,"primeraejecucion")
     end
- 
- 
-    
+      
 function eventNewPlayer(name)
             players[name] = {
                 score = 0,
@@ -471,7 +522,7 @@ function eventNewPlayer(name)
      
       
       for name in pairs(tfm.get.room.playerList) do
-    for keys, k in pairs({32, 72, 76}) do
+    for keys, k in pairs({32, 72, 76,79}) do
        tfm.exec.bindKeyboard(name, k, true, true)
     end
 end
@@ -491,6 +542,35 @@ darscore()
     
     
 function eventTextAreaCallback(id,name,callback)
+
+  if callback=="cannonesespeciales" then
+
+    if cannonesespeciales then
+    	if cambiocannones<=2 then
+      cannonesespeciales=false
+      actualizarcuadro()
+      cambiocannones=cambiocannones+1
+  		else
+  		ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
+
+ 		 end
+   
+    elseif cannonesespeciales==false then
+    	if cambiocannones<=2 then
+       cannonesespeciales=true
+       actualizarcuadro()
+      cambiocannones=cambiocannones+1
+  else
+  	ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+     ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
+                                
+   end
+       
+    end
+  end
+
+
   if callback=="help" then
     eventChatCommand(name,callback)
  
@@ -517,7 +597,7 @@ function eventTextAreaCallback(id,name,callback)
   elseif callback=="creditos"  then
   ui.updateTextArea(16, box("creditos")[players[name].helpid],name)
   ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)
-  
+
   elseif callback=="modoestandar" then
   
   crono=false
@@ -559,12 +639,6 @@ function eventTextAreaCallback(id,name,callback)
   
  
 end
- 
- 
-    
-    
- 
-    
     
 function eventPlayerDied(name)  
     playersAlive=playersAlive-1
@@ -621,16 +695,12 @@ ui.addTextArea(23,"<p align='center'><b>escribe el comando <font color='#EFF0EE'
      
             end
 end    
-    
-    
-    
+     
     
 function eventNewGame()
     
       --toma un id para el cañon
-                local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
-            local picked_value = cannones[value] -- Pick value from table
-            idCannon=picked_value
+                generarCannonId()
  
     
               verjugadores()
@@ -659,14 +729,7 @@ function eventNewGame()
             if primeraEjecucion then
             tfm.exec.setUIMapName("<YELLOW>#dodge by factral                                 ")
             end
-end
- 
-    
-    
- 
-    
- 
-    
+end 
     
 function finish ()
            numeroRonda=numeroRonda+1
@@ -685,9 +748,6 @@ function finish ()
         Wait= 0 
             
 end 
- 
- 
- 
  
 function ganadorTotal()
     if numeroRonda==8 then
@@ -711,14 +771,10 @@ function ganadorTotal()
     end
 end
     
-    
- 
  
 for name, player in pairs(tfm.get.room.playerList) do
             eventNewPlayer(name)      
        
 end
- 
- 
  
 EjecutarMapa()
