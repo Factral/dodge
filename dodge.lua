@@ -110,7 +110,7 @@
     end
     
     local Load= function(time, remaining)
-      print(abierto)
+	
       asa=time/1000;timer=asa;count = count + 1;dios = dios + 1;    
       diagonal = diagonal + math.random(0, 4)   
             
