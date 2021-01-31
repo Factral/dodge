@@ -13,8 +13,7 @@
     tfm.exec.disableMortCommand() 
     tfm.exec.disablePhysicalConsumables()
  
-     system.disableChatCommandDisplay("help")
-      system.disableChatCommandDisplay("modos")
+     system.disableChatCommandDisplay("help");system.disableChatCommandDisplay("modos");system.disableChatCommandDisplay("settings")
  
      print("<img src='https://i.imgur.com/CsIOXFg.png' /><br /><br /><br /><br /><br /> <br>")
      print("<br><p align='left'><font color='#638071'>[DODGE] </font><font color='#7CD499'>Welcome to </font><b><font color='#D2EC16'>#dodge </font></b><font color='#7CD499'>survive the cannons!<br>Plase Type</br> <b><font color='#33AA74'>!help</font></b> to show more information about this. </font><font color='#7CD499'>see the project repository here:</font><b><font color='#33AA74'>https://github.com/Factral/dodge</font></b></p>")
@@ -28,7 +27,7 @@
                   "<p align='center'><font size='25'><bv>Modos</bv></font></p><br><br><p align='left'><font size='13' color='#CF7B7B'>Modo estándar:</font> Es el modo que se ejecuta de forma predeterminada, se divide en 7 rondas y el que mas haya sobrevivido en el total de rondas es el ganador, esta habilitado el doble salto durante el modo dios  <br><br><font size='13' color='#CF7B7B'>Modo crono:</font>Es un modo para contabilizar el tiempo que sobrevives en un mapa determinado, al morir automáticamente te dará el tiempo es segundos que has sobrevivido. Para ponerlo simplemente pon el comando  <font color='#BBCF7B'>!crono</font>  <br><br><font size='13' color='#CF7B7B'>Modo individual:</font> Este modo solo se ejecuta cuando hay una persona en la sala</p>",
                     },
             comandos={
-"<p align='center'><font size='25'><bv>Comandos</bv></font></p><br><p align='left'> <b><font color='#EFF0EE'>!np</font></b> cambia de mapa (disponible durante los primeros 25 segundos)<br><br><font color='#EFF0EE'>!modos</font> muestra los modos disponibles<br><br><font color='#EFF0EE'>!restart</font> reinicia las rondas desde 1 (disponible al finalizar todas las rondas)<br><br><font color='#EFF0EE'>!redo</font> comando para reiniciar el tiempo (disponible en modo crono)</p><br><p align='center'><font size='25'><bv>Teclas</bv></font></p><br><p align='left'><font color='#EFF0EE'>L </font>: muestra la clasificacion en el modo estandar </p>",
+"<p align='center'><font size='25'><bv>Comandos</bv></font></p><br><p align='left'> <b><font color='#EFF0EE'>!np</font></b> cambia de mapa<br><br><b><font color='#EFF0EE'>!modos</font></b> muestra los modos disponibles<br><br><b><font color='#EFF0EE'>!restart</font></b> reinicia las rondas desde 1 (disponible al finalizar todas las rondas)<br><br><b><font color='#EFF0EE'>!redo</font></b> comando para reiniciar el tiempo (disponible en modo crono)</p><br><p align='center'><font size='25'><bv>Teclas</bv></font></p><br><p align='left'><b><font color='#EFF0EE'>L </font></b>: muestra la clasificacion en el modo estandar<br><br><b><font color='#EFF0EE'>O </font></b>: muestra la configuracion de dodge<br><br><b><font color='#EFF0EE'>M </font></b>: muestra los modos disponibles</p>",
                     },
             creditos={
 "<p align='center'><font size='25'><bv>Creditos</bv></font></p><br><br>El rediseño de Dodge es desarrollado por mi, <font color='#7BCFC5'>Factral#0000</font>, he aprendido mucho sobre <font color='#CFA97B'>lua</font> mientras lo desarrollaba y mi intención nunca ha sido que este proyecto sea similar a algún modulo oficial, simplemente lo hice por diversión y aprender un poco de <font color='#CFA97B'>lua.</font><br><br><br>Gracias especiales a <font color='#7BCFC5'>Jp_darkuss#4806</font>  y <font color='#7BCFC5'>Mundialpross#0000</font> por ayudar con parte del codigo y ideas con el diseño</p>",
@@ -55,38 +54,39 @@
        
     cannonesespeciales = false;    cambiocannones=0;   cann=1;    sett=0; primeraEjecucion=true;  rondaFinal=false;   bool=false; modoIndividual=false;       modoCrono=false;        muertoJugadorCrono=false;   
     countdown = 0;  playersAlive=0; count = 0;      jump = 5;       can=0;  dios=0; diagonal = 0;   timer=0;    help=0; mins=0; 
-    seconds=0;      wait = 0;   numeroRonda=1;
+    seconds=0;      wait = 0;   numeroRonda=1; lea=0;
 
 
     function actualizarcuadro()
      local textcannonesespeciales = "<font color='#B1B0B0' size='13' align='center' face='Ubuntu'>  Cañones Deathmatch     </font>"
      local rand_can_txt = cannonesespeciales and "<font color='#63da0b' size='15' align='center' face='Ubuntu'>☑</font>" or "<font color='#727272' size='15' align='center' face='Ubuntu'>☐</font>"
      settings = "<p align='center'><font color='#ffffff' size='13' align='center' face='Ubuntu'>Settings</font></p><br/>"..textcannonesespeciales.."<a href='event:cannonesespeciales'>"..rand_can_txt.."</a><br>"
-     ui.addTextArea(95, settings, name, 290,145, 200, 110, 0x171616, 0x555555, 0.9, true)
+     ui.addTextArea(95, settings, name, 280,145, 210, 110, 0x171616, 0x555555, 0.9, true)
      ui.removeTextArea(99,name); lea=0
     end
 
  
  
     function generarCannonId()
-      
-       cann = math.random (1,35)                   
- 	   local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
+       -- genera numero aleatorio para la posicion dentro de specialcannons     
+       cann = math.random (1,35)    
+       -- genera el id del cañon para los cañones estandar               
+     local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
        local picked_value = cannones[value] -- Pick value from table
        idCannon=picked_value
     end
 
 
     function verjugadores()
-    i=0
+    	i=0
           for k,v in pairs(tfm.get.room.playerList) do
             i=i+1
-       end
+       	  end
      end
     
     
     function EjecutarMapa()
-    	cambiocannones=0
+      cambiocannones=0
         if primeraEjecucion then
           tfm.exec.newGame(7818703)
           tfm.exec.setUIMapName("<YELLOW>#dodge by factral           ")
@@ -110,13 +110,8 @@
     end
     
     local Load= function(time, remaining)
-      
-      asa=time/1000
-      timer=asa
-       jump = jump+1
-      count = count + 1
-      dios = dios + 1
-      
+      print(abierto)
+      asa=time/1000;timer=asa;count = count + 1;dios = dios + 1;    
       diagonal = diagonal + math.random(0, 4)   
             
         if not primeraEjecucion then
@@ -125,7 +120,7 @@
                shootedcannon= tfm.exec.addShamanObject(idCannon, 820, math.random(150,380), math.random(-135, -45), 0, 0, false)
                if cannonesespeciales then
                tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon,-16,-16,nil)
-          		 end
+               end
             end
             
         
@@ -134,14 +129,14 @@
                     --tfm.exec.addShamanObject(4, 810, 0, 90)
                     shootedcannon1 = tfm.exec.addShamanObject(idCannon, -10, 200, 180)
                     if cannonesespeciales then
-               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon1,-16,-16,nil)
-          		 end
+                  tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon1,-16,-16,nil)
+               end
                     count = 0
                 elseif diagonal >= 14 then
                     shootedcannon2 = tfm.exec.addShamanObject(idCannon, 110, 100, math.random(-160, -120))
                     if cannonesespeciales then
-               			tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon2,-16,-16,nil)
-          			 end
+                    tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon2,-16,-16,nil)
+                 end
                     diagonal = 0
                 end
                 --modio dios
@@ -152,6 +147,7 @@
                    generarCannonId()
                 end
                 if dios >= 100 and not modoCrono then
+                	jump = jump+1;
                     if  modoIndividual then
                      tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Individual")
                     else
@@ -160,18 +156,18 @@
                     shootedcannon4 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
                     shootedcannon5 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
                     if cannonesespeciales then
-               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
-               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
-          		 end
+                  tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
+                  tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
+               end
                 end
                 if dios >= 100 and  modoCrono then
                 tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Crono")
                     shootedcannon4 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
                     shootedcannon5 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
                  if cannonesespeciales then
-               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
-               		tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
-          		 end
+                  tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
+                  tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
+               end
                 end
             end
                 
@@ -245,9 +241,9 @@
     local winned= false
     function eventLoop(time,remaining)
             if not winned then
-            	if cambiocannones>=3 then
-            	Wait= Wait + 500
-            	 if Wait>= 3500 then
+              if cambiocannones>=3 then
+              Wait= Wait + 500
+               if Wait>= 3500 then
                     Wait= 0
                     ui.removeTextArea(101,name)
                     ui.removeTextArea(102,name)
@@ -262,10 +258,7 @@
                 end
 
             end
-    end
-    
-    
-    
+    end   
         
    verjugadores()
  
@@ -284,7 +277,6 @@ end
 function box(input)
 return boxes.help[input]
 end
- 
  
 function showTime(timer)
  
@@ -314,19 +306,20 @@ end
 function eventChatCommand(name,command)
                    
                   if command=="settings" then
+                  	if not primeraEjecucion then
                     actualizarcuadro()
+                	end
                   end
 
                    if command== "lea" then
                     if not modoCrono and not primeraEjecucion then
-                      local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"
-                    
-            for name, player in pairs(tfm.get.room.playerList) do
-                  leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
-              end
-              ui.removeTextArea(95,name)
-         ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true);sett=0
-        end
+                      local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"                    
+            			for name, player in pairs(tfm.get.room.playerList) do
+                  			leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
+             		    end
+             		  ui.removeTextArea(95,name)
+         			  ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true);sett=0
+     			    end
                    end
                    
                    
@@ -417,36 +410,48 @@ function eventChatCommand(name,command)
                        ui.removeTextArea(26,final)
                         
                     end
-                end
-              
-                    
-                    end
+                end                                  
+        end
                     
                     if command=="help" then
+                       help=help+1
                        ui.addTextArea(12,"<p align='left'><a href='event:acercade'><b>Acerca de</b></a></p>",name,149,122,90,16,0x231414,0x3e5d2e,nil,true)
                        ui.addTextArea(13,"<p align='left'><a href='event:modos'><b>Modos</b></a></p>",name,149,152,90,16,0x231414,0x3e5d2e,nil,true)
                        ui.addTextArea(14,"<p align='left'><a href='event:comandos'><b>Comandos</b></a></p>",name,149,182,90,16,0x231414,0x3e5d2e,nil,true)
                        ui.addTextArea(15,"<p align='left'><a href='event:creditos'><b>Creditos</b></a></p>",name,149,212,90,16,0x231414,0x3e5d2e,nil,true)
-                      
+                       --contenido de ccada event
                        ui.addTextArea(16,box("acercade")[players[name].helpid],name,230,70,380,280,0x1d1b1b,0x242525,nil,true) 
- 
-                       ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)
- 
-                       end
+                       --boton para cerrar
+                       ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)                      
+                       
+                       if help==2 then
+               			 for id=12,17 do
+                    		ui.removeTextArea(id,name)
+                		 end
+              			help=0
+            		   end
+                    end
                        
                        
-                      if command=="modos" then
-                       ui.addTextArea(27," ",name,200,120,400,180,0x1d1b1b,0xFFFFFF,nil,true)
-                       ui.addTextArea(28,"<p align='center'><b><font size='23' color='#37C68E'>Escoge un modo</font></b></a></p>",name,201,125,400,180,0,0,0,true)  
-                       ui.addTextArea(29," ",name,240,175,100,90,0x141816,0xFFFFFF,nil,true)
-                       ui.addTextArea(30," ",name,460,175,100,90,0x141816,0xFFFFFF,nil,true)
-                       ui.addTextArea(31,"<p align='center'><a href='event:modoestandar'><b><font size='17' color='#EC1616'>Modo <br>Estandar</font></b></a></p>",name,240,195,100,90,0,0,0,true)
-                         ui.addTextArea(32,"<p align='center'><a href='event:modocrono'><b><font size='17' color='#EC1616'>Modo <br>Crono</font></b></a></p>",name,460,195,100,90,0,0,0,true)
-                         if not primeraEjecucion then
+                     if command=="modos" then                     	
+                       	ui.addTextArea(27," ",name,200,120,400,180,0x1d1b1b,0xFFFFFF,nil,true)
+                       	ui.addTextArea(28,"<p align='center'><b><font size='23' color='#37C68E'>Escoge un modo</font></b></a></p>",name,201,125,400,180,0,0,0,true)  
+                       	ui.addTextArea(29," ",name,240,175,100,90,0x141816,0xFFFFFF,nil,true)
+                       	ui.addTextArea(30," ",name,460,175,100,90,0x141816,0xFFFFFF,nil,true)
+                       	ui.addTextArea(31,"<p align='center'><a href='event:modoestandar'><b><font size='17' color='#EC1616'>Modo <br>Estandar</font></b></a></p>",name,240,195,100,90,0,0,0,true)
+                        ui.addTextArea(32,"<p align='center'><a href='event:modocrono'><b><font size='17' color='#EC1616'>Modo <br>Crono</font></b></a></p>",name,460,195,100,90,0,0,0,true)
+                        if not primeraEjecucion then
                          ui.addTextArea(33,"<p align='center'><font size='25'><a href='event:cerrar'><b>X</b></a></p>",name,552,119,53,43,0,0,0,true)
-                         end
-                         
-                          end        
+                         if abierto  then
+            			 	abierto=false
+            	 			for id=25,33 do
+     							ui.removeTextArea(id,final)
+     						end
+     					 else
+     						abierto=true
+     	    			 end    
+                        end                     
+                     end        
                          
                              if command=="primeraejecucion" then
                              if primeraEjecucion then
@@ -460,8 +465,6 @@ function eventChatCommand(name,command)
 
                     end
 end
-                    
-                    lea=0
                     
 function eventKeyboard(name,key,down,x,y)
 
@@ -480,19 +483,15 @@ function eventKeyboard(name,key,down,x,y)
             end
             if key == 72 then
                 eventChatCommand(name,"help")
-                help=help+1
             end
             
             if key==76 then     
             eventChatCommand(name,"lea")
             lea=lea+1
             end
-            
-            if help==2 then
-                for id=12,17 do
-                    ui.removeTextArea(id,name)
-                end
-              help=0
+
+            if key==77 then
+            		eventChatCommand(name,"modos")
             end
             
             if lea>=2 then
@@ -519,57 +518,48 @@ function eventNewPlayer(name)
             }
     ui.addTextArea(10,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,779,387,17,12,0x030200,0x2a291a,nil,true)
     ui.addTextArea(11,"<p align='center'><a href='event:help'><b><font color='#FFFFFF'>?</font></b></a></p>",name,780,383,16,16,0,0,0,true)
-     
-      
+           
       for name in pairs(tfm.get.room.playerList) do
-    for keys, k in pairs({32, 72, 76,79}) do
-       tfm.exec.bindKeyboard(name, k, true, true)
-    end
+   		 for keys, k in pairs({32, 72, 76,79,77}) do
+       		tfm.exec.bindKeyboard(name, k, true, true)
+    	end
+	  end
 end
-
-end
-    
-    
+        
 function darscore(name)
     for name, player in pairs(tfm.get.room.playerList) do
       tfm.exec.setPlayerScore(name, 0, false)
     end
-end
-    
-darscore()
-        
-        
-    
+end      
     
 function eventTextAreaCallback(id,name,callback)
 
   if callback=="cannonesespeciales" then
 
     if cannonesespeciales then
-    	if cambiocannones<=2 then
+      if cambiocannones<=2 then
       cannonesespeciales=false
       actualizarcuadro()
       cambiocannones=cambiocannones+1
-  		else
-  		ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+      else
+      ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
         ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
 
- 		 end
+     end
    
     elseif cannonesespeciales==false then
-    	if cambiocannones<=2 then
+      if cambiocannones<=2 then
        cannonesespeciales=true
        actualizarcuadro()
       cambiocannones=cambiocannones+1
   else
-  	ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+    ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
      ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
                                 
    end
        
     end
   end
-
 
   if callback=="help" then
     eventChatCommand(name,callback)
@@ -580,6 +570,7 @@ function eventTextAreaCallback(id,name,callback)
      ui.removeTextArea(id,name)
      ui.removeTextArea(6969+id,name)
      ui.removeTextArea(7979+id,name)
+     help=0
   end
  
   elseif callback=="acercade"  then
@@ -630,14 +621,11 @@ function eventTextAreaCallback(id,name,callback)
   eventChatCommand(name,"modocrono")
   
   elseif callback=="cerrar" then
+  	abierto=false
    for id=25,33 do
      ui.removeTextArea(id,final)
-     end
-  
-  
+     end   
   end
-  
- 
 end
     
 function eventPlayerDied(name)  
@@ -700,22 +688,17 @@ end
 function eventNewGame()
     
       --toma un id para el cañon
-                generarCannonId()
- 
-    
-              verjugadores()
-             
-           
-             
+              generarCannonId() 
+      -- ve los jugadores 
+              verjugadores()             
+                        
              if i==1 and not modoCrono then
               tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Individual")
               modoIndividual = true
               numeroRonda=1
                  elseif modoCrono==true  then            
              tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Crono         <N>Time : <V>"..mins..":"..seconds.."\n")
- 
- 
-                         
+                        
              else
             tfm.exec.setUIMapName("<YELLOW>#dodge by factral        <N>Ronda: <V>"..numeroRonda.."/7      <N>Modo: <V>Estandar")
             modoIndividual = false
@@ -745,8 +728,7 @@ function finish ()
         ganadorTotal()
         end
         winned= false
-        Wait= 0 
-            
+        Wait= 0             
 end 
  
 function ganadorTotal()
@@ -765,16 +747,13 @@ function ganadorTotal()
         end
     campeon = key, max                              
     rondaFinal = true
-    bool = true     
-                    
-                
+    bool = true                                         
     end
-end
-    
+end   
  
 for name, player in pairs(tfm.get.room.playerList) do
-            eventNewPlayer(name)      
-       
+            eventNewPlayer(name)            
 end
- 
+
+darscore() 
 EjecutarMapa()
