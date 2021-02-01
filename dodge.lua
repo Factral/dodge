@@ -1,20 +1,14 @@
  -- #Dodge Transformice
     --script hecho por factral#0000 , creditos a Deadjerry y maik005
- 
     
-    tfm.exec.disableAutoNewGame(true)
-    tfm.exec.disableAutoShaman(true)
-    tfm.exec.disableAfkDeath(true)
-    tfm.exec.disableAutoScore(true)
-    tfm.exec.disableAutoTimeLeft(true)  
-    tfm.exec.setGameTime(0)
-    tfm.exec.disableAutoScore(true)
-    tfm.exec.disableMinimalistMode()  
-    tfm.exec.disableMortCommand() 
+    tfm.exec.disableAutoNewGame(true); tfm.exec.disableAutoShaman(true)
+    tfm.exec.disableAfkDeath(true); tfm.exec.disableAutoScore(true)
+    tfm.exec.disableAutoTimeLeft(true); tfm.exec.disableAutoScore(true)
+    tfm.exec.disableMinimalistMode(); tfm.exec.disableMortCommand() 
     tfm.exec.disablePhysicalConsumables()
  
-    system.disableChatCommandDisplay("help");system.disableChatCommandDisplay("modos");system.disableChatCommandDisplay("settings")
- 
+    for _, v in next, {'help', 'modos', 'settings', 'restart',} do system.disableChatCommandDisplay(v) end
+
     print("<img src='https://i.imgur.com/CsIOXFg.png' /><br /><br /><br /><br /><br /> <br>")
     print("<br><p align='left'><font color='#638071'>[DODGE] </font><font color='#7CD499'>Welcome to </font><b><font color='#D2EC16'>#dodge </font></b><font color='#7CD499'>survive the cannons!<br>Plase Type</br> <b><font color='#33AA74'>!help</font></b> to show more information about this. </font><font color='#7CD499'>see the project repository here:</font><b><font color='#33AA74'>https://github.com/Factral/dodge</font></b></p>")
  
@@ -52,16 +46,23 @@
     {"target", "175db7c6a9a"};    {"water", "1660c65740f"};    {"air", "1660c5db325"};    {"flame", "1660c4bf1a4"};    {"nature", "149af13faa2"};    {"recycle", "149aeaaf47a"};    {"vine", "149af122bb3"};    {"music", "149af146cb6"};
                     }
        
-    cannonesespeciales = false;    cambiocannones=0;   cann=1;    sett=0; primeraEjecucion=true;  rondaFinal=false;   bool=false; modoIndividual=false;       modoCrono=false;        muertoJugadorCrono=false;   
-    countdown = 0;  playersAlive=0; count = 0;      jump = 5;       can=0;  dios=0; diagonal = 0;   help=0; mins=0; 
-    seconds=0;      wait = 0;   numeroRonda=1; lea=0;
+    cannonesespeciales = false;cambiocannones=0;cann=1;primeraEjecucion=true;rondaFinal=false;bool=false;modoIndividual=false;modoCrono=false;muertoJugadorCrono=false;   
+    countdown = 0;  playersAlive=0; count = 0;jump = 5;can=0;dios=0;diagonal=0;mins=0; 
+    seconds=0;      wait = 0;   numeroRonda=1;
 
-    function actualizarcuadro()
+
+    function cerrartodo(name)
+      ui.removeTextArea(95,name);ui.removeTextArea(99,name);
+      for id=12,17 do  ui.removeTextArea(id,name)   end
+      for id=25,33 do  ui.removeTextArea(id,final)  end
+    end
+
+    function actualizarcuadro(name)
      local textcannonesespeciales = "<font color='#B1B0B0' size='13' align='center' face='Ubuntu'>  Cañones Deathmatch     </font>"
      local rand_can_txt = cannonesespeciales and "<font color='#63da0b' size='15' align='center' face='Ubuntu'>☑</font>" or "<font color='#727272' size='15' align='center' face='Ubuntu'>☐</font>"
      settings = "<p align='center'><font color='#ffffff' size='13' align='center' face='Ubuntu'>Settings</font></p><br/>"..textcannonesespeciales.."<a href='event:cannonesespeciales'>"..rand_can_txt.."</a><br>"
      ui.addTextArea(95, settings, name, 280,145, 210, 110, 0x171616, 0x555555, 0.9, true)
-     ui.removeTextArea(99,name); lea=0
+     ui.removeTextArea(99,name);
     end
 
     function generarCannonId()
@@ -73,9 +74,8 @@
        idCannon=picked_value
     end
 
-
     function suprimircannones()
-    	for idCannon, object in pairs(tfm.get.room.objectList) do
+      for idCannon, object in pairs(tfm.get.room.objectList) do
             table.insert(IDList, idCannon)
         end
         --eliminar cañones
@@ -85,10 +85,10 @@
     end
 
     function verjugadores()
-    	  i=0
+        i=0
           for k,v in pairs(tfm.get.room.playerList) do
             i=i+1
-       	  end
+          end
      end   
     
     function EjecutarMapa()
@@ -104,10 +104,7 @@
             tfm.exec.newGame(codigoMapa)
             bool = false; countdown = 0;dios = 0                                  
             ui.removeTextArea(99,name);ui.removeTextArea(101,name);ui.removeTextArea(102,name)
-            if lea==1 then
-            	eventChatCommand(name,"lea")
-              lea=1
-            end
+          
         end
     end
     
@@ -289,155 +286,166 @@
   function eventChatCommand(name,command)
                    
     if command=="settings" then
-    	if not primeraEjecucion then
-            actualizarcuadro()
-        end
+      if not primeraEjecucion then
+        players[name].opened.help=false;players[name].opened.leader=false;players[name].opened.modos=false;
+        cerrartodo(name)
+        actualizarcuadro(name)
+        if players[name].opened.sett then
+          players[name].opened.sett=false
+          ui.removeTextArea(95,name)
+        else
+          players[name].opened.sett=true
+        end    
+      end
     end
                
     if command== "lea" then
-        if not modoCrono and not primeraEjecucion then
-            local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"                    
-            for name, player in pairs(tfm.get.room.playerList) do
-                leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
-            end
-            ui.removeTextArea(95,name)
-         	ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true);sett=0
-     	end
-    end
-                   
+      if not modoCrono and not primeraEjecucion then
+        players[name].opened.help=false;players[name].opened.sett=false;players[name].opened.modos=false;
+        cerrartodo(name)
+        local leaderboard="<p align='center'><font color='#FFFFFF'>Leaderboard</font><br/><br/>"                    
+        for name, player in pairs(tfm.get.room.playerList) do
+          leaderboard= leaderboard..players[name].nombre.." - "..players[name].score.." pts<br/>"
+        end
+        ui.addTextArea(99, leaderboard, name, 280,85, 210, 250, 0x171616, 0x555555, 0.9, true)
+        if players[name].opened.leader then
+          players[name].opened.leader=false
+          ui.removeTextArea(99,name)
+        else
+          players[name].opened.leader=true
+        end       
+      end
+    end                   
                    
     if command== "np" then
-        if  not muertoJugadorCrono then
-        	if TiempoTranscurrido*1000 <=3000 then
-                ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-                ui.addTextArea(26,"<p align='center'><b>Vuelve a escribir el comando.</b></a></p>",final,2,383,270,16,0,0,0,true)
-            end
-            if TiempoTranscurrido*1000 >=3000 then
-                if bool then
-                    ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-                    ui.addTextArea(26,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
-               	end
-            	if not bool then
-                	ui.removeTextArea(25,final)
-                	ui.removeTextArea(26,final)
-               		EjecutarMapa()
-            	end
-        	end
-    	end
-   	end
+      if  not muertoJugadorCrono then
+        if TiempoTranscurrido*1000 <=3000 then
+          ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+          ui.addTextArea(26,"<p align='center'><b>Vuelve a escribir el comando.</b></a></p>",final,2,383,270,16,0,0,0,true)
+        end
+        if TiempoTranscurrido*1000 >=3000 then
+          if bool then
+            ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
+            ui.addTextArea(26,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
+          end
+          if not bool then
+            ui.removeTextArea(25,final)
+            ui.removeTextArea(26,final)
+            EjecutarMapa()
+          end
+        end
+      end
+    end
                     
     if command=="restart" then
-        if numeroRonda==8 then
-         	reiniciartodo()    
-       	end
-  	end
+      if numeroRonda==8 then
+        reiniciartodo()    
+      end
+    end
                     
-  	if command=="modocrono" then
-     	if TiempoTranscurrido*1000 >=3000 then
-       		ui.removeTextArea(22,final)
-       		ui.removeTextArea(23,final)
-       		ui.removeTextArea(25,final)
-       		ui.removeTextArea(26,final)
-       		ui.removeTextArea(7,final)
-       		reiniciartodo()
-       		mins=0;  seconds=0;   abierto=false;modoCrono=true;modoIndividual=false;muertoJugadorCrono=false
-     	end
-  	end
+    if command=="modocrono" then
+      if TiempoTranscurrido*1000 >=3000 then
+          ui.removeTextArea(22,final)
+          ui.removeTextArea(23,final)
+          ui.removeTextArea(25,final)
+          ui.removeTextArea(26,final)
+          ui.removeTextArea(7,final)
+          reiniciartodo()
+          mins=0;  seconds=0;players[name].opened.modos=false;modoCrono=true;modoIndividual=false;muertoJugadorCrono=false
+      end
+    end
                     
-   	if command=="redo" then
-     	if muertoJugadorCrono then          	       	
-          	ui.removeTextArea(7,final)
-         	ui.removeTextArea(22,final)
-         	ui.removeTextArea(23,final)
-         	reiniciartodo()   
-          	mins=0; seconds=0; muertoJugadorCrono=false
- 		end
-   	end
+    if command=="redo" then
+      if muertoJugadorCrono then                    
+        ui.removeTextArea(7,final)
+        ui.removeTextArea(22,final)
+        ui.removeTextArea(23,final)
+        reiniciartodo()   
+        mins=0; seconds=0; muertoJugadorCrono=false
+      end
+    end
                    
-   	if command=="modoestandar" then       
-	 	abierto=false
- 		if i>=2 then
- 			if TiempoTranscurrido*1000 >=3000 then     
-          		ui.removeTextArea(7,final)
-           		ui.removeTextArea(22,final)
-           		ui.removeTextArea(23,final)
-            	ui.removeTextArea(25,final)
-           		ui.removeTextArea(26,final)
-           		reiniciartodo() 
-            	modoCrono=false;modoIndividual=false;muertoJugadorCrono=false 
-            end                
- 	   	end
-              
-      	if i==1 then
-          	if TiempoTranscurrido*1000 >=3000 then        		
-              	ui.removeTextArea(7,final)
-              	ui.removeTextArea(22,final)
-              	ui.removeTextArea(23,final)
-             	ui.removeTextArea(25,final)
-             	ui.removeTextArea(26,final)
-             	reiniciartodo()  
-              	modoCrono=false;modoIndividual=true;muertoJugadorCrono=false                     
-            end
-        end                                  
+    if command=="modoestandar" then       
+      if i>=2 then
+        if TiempoTranscurrido*1000 >=3000 then     
+          ui.removeTextArea(7,final);ui.removeTextArea(22,final);ui.removeTextArea(23,final)
+          ui.removeTextArea(25,final);ui.removeTextArea(26,final)
+          reiniciartodo() 
+          players[name].opened.modos=false;modoCrono=false;modoIndividual=false;muertoJugadorCrono=false
+        end                
+      end             
+      if i==1 then
+        if TiempoTranscurrido*1000 >=3000 then            
+          ui.removeTextArea(7,final);ui.removeTextArea(22,final);ui.removeTextArea(23,final)
+          ui.removeTextArea(25,final);ui.removeTextArea(26,final)
+          reiniciartodo()  
+          modoCrono=false;modoIndividual=true;muertoJugadorCrono=false                     
+        end
+      end                                  
     end
                     
     if command=="help" then
-       	help=help+1
-       	ui.addTextArea(12,"<p align='left'><a href='event:acercade'><b>Acerca de</b></a></p>",name,149,122,90,16,0x231414,0x3e5d2e,nil,true)
-       	ui.addTextArea(13,"<p align='left'><a href='event:modos'><b>Modos</b></a></p>",name,149,152,90,16,0x231414,0x3e5d2e,nil,true)
-       	ui.addTextArea(14,"<p align='left'><a href='event:comandos'><b>Comandos</b></a></p>",name,149,182,90,16,0x231414,0x3e5d2e,nil,true)
-       	ui.addTextArea(15,"<p align='left'><a href='event:creditos'><b>Creditos</b></a></p>",name,149,212,90,16,0x231414,0x3e5d2e,nil,true)
-       	--contenido de ccada event
-       	ui.addTextArea(16,box("acercade")[players[name].helpid],name,230,70,380,280,0x1d1b1b,0x242525,nil,true) 
-       	--boton para cerrar
-       	ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)                      
-                       
-       	if help==2 then
-		 	for id=12,17 do
-        		ui.removeTextArea(id,name)
-		 	end
-  			help=0
-	   	end
+     if not primeraEjecucion then 
+      players[name].opened.leader=false;players[name].opened.sett=false;players[name].opened.modos=false;     
+      cerrartodo(name)
+      ui.addTextArea(12,"<p align='left'><a href='event:acercade'><b>Acerca de</b></a></p>",name,149,122,90,16,0x231414,0x3e5d2e,nil,true)
+      ui.addTextArea(13,"<p align='left'><a href='event:modos'><b>Modos</b></a></p>",name,149,152,90,16,0x231414,0x3e5d2e,nil,true)
+      ui.addTextArea(14,"<p align='left'><a href='event:comandos'><b>Comandos</b></a></p>",name,149,182,90,16,0x231414,0x3e5d2e,nil,true)
+      ui.addTextArea(15,"<p align='left'><a href='event:creditos'><b>Creditos</b></a></p>",name,149,212,90,16,0x231414,0x3e5d2e,nil,true)
+      --contenido de ccada event
+      ui.addTextArea(16,box("acercade")[players[name].helpid],name,230,70,380,280,0x1d1b1b,0x242525,nil,true) 
+      --boton para cerrar
+      ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)                      
+    
+      if players[name].opened.help then
+        players[name].opened.help=false
+        for id=12,17 do
+          ui.removeTextArea(id,name)
+        end
+      else
+        players[name].opened.help=true
+      end     
+     end                
     end
-                       
-                       
- 	if command=="modos" then                     	
-   		ui.addTextArea(27," ",name,200,120,400,180,0x1d1b1b,0xFFFFFF,nil,true)
-   		ui.addTextArea(28,"<p align='center'><b><font size='23' color='#37C68E'>Escoge un modo</font></b></a></p>",name,201,125,400,180,0,0,0,true)  
-   		ui.addTextArea(29," ",name,240,175,100,90,0x141816,0xFFFFFF,nil,true)
-   		ui.addTextArea(30," ",name,460,175,100,90,0x141816,0xFFFFFF,nil,true)
-   		ui.addTextArea(31,"<p align='center'><a href='event:modoestandar'><b><font size='17' color='#EC1616'>Modo <br>Estandar</font></b></a></p>",name,240,195,100,90,0,0,0,true)
-    	ui.addTextArea(32,"<p align='center'><a href='event:modocrono'><b><font size='17' color='#EC1616'>Modo <br>Crono</font></b></a></p>",name,460,195,100,90,0,0,0,true)
-    	if not primeraEjecucion then
-         	ui.addTextArea(33,"<p align='center'><font size='25'><a href='event:cerrar'><b>X</b></a></p>",name,552,119,53,43,0,0,0,true)
-         	if abierto  then
-			 	abierto=false
-	 			for id=25,33 do
-					ui.removeTextArea(id,final)
-				end
-		 	else
-				abierto=true
-		 	end    
-        end                     
- 	end        
+                                         
+  if command=="modos" then     
+    players[name].opened.help=false;players[name].opened.leader=false;players[name].opened.sett=false;
+    cerrartodo(name)     
+    ui.addTextArea(27," ",name,200,120,400,180,0x1d1b1b,0xFFFFFF,nil,true)
+    ui.addTextArea(28,"<p align='center'><b><font size='23' color='#37C68E'>Escoge un modo</font></b></a></p>",name,201,125,400,180,0,0,0,true)  
+    ui.addTextArea(29," ",name,240,175,100,90,0x141816,0xFFFFFF,nil,true)
+    ui.addTextArea(30," ",name,460,175,100,90,0x141816,0xFFFFFF,nil,true)
+    ui.addTextArea(31,"<p align='center'><a href='event:modoestandar'><b><font size='17' color='#EC1616'>Modo <br>Estandar</font></b></a></p>",name,240,195,100,90,0,0,0,true)
+    ui.addTextArea(32,"<p align='center'><a href='event:modocrono'><b><font size='17' color='#EC1616'>Modo <br>Crono</font></b></a></p>",name,460,195,100,90,0,0,0,true)
+      if not primeraEjecucion then
+        ui.addTextArea(33,"<p align='center'><font size='25'><a href='event:cerrar'><b>X</b></a></p>",name,552,119,53,43,0,0,0,true)        
+        if players[name].opened.modos == true then
+          players[name].opened.modos=false
+          for id=25,33 do
+            ui.removeTextArea(id,final)
+          end
+        else         
+          players[name].opened.modos=true
+        end
+      end                     
+  end        
                          
- 	if command=="primeraejecucion" then
-     	if primeraEjecucion then
-   			ui.addTextArea(27," ",final,200,120,400,180,0x1d1b1b,0xFFFFFF,nil,true)
-   			ui.addTextArea(28,"<p align='center'><b><font size='23' color='#37C68E'>Escoge un modo</font></b></a></p>",final,201,125,400,180,0,0,0,true)  
-   			ui.addTextArea(29," ",final,240,175,100,90,0x141816,0xFFFFFF,nil,true)
-   			ui.addTextArea(30," ",final,460,175,100,90,0x141816,0xFFFFFF,nil,true)
-	 		ui.addTextArea(31,"<p align='center'><a href='event:modoestandar'><b><font size='17' color='#EC1616'>Modo <br>Estandar</font></b></a></p>",final,240,195,100,90,0,0,0,true)
-   			ui.addTextArea(32,"<p align='center'><a href='event:modocrono'><b><font size='17' color='#EC1616'>Modo <br>Crono</font></b></a></p>",final,460,195,100,90,0,0,0,true)
-       	end
-    end 
+  if command=="primeraejecucion" then
+      if primeraEjecucion then
+        ui.addTextArea(27," ",final,200,120,400,180,0x1d1b1b,0xFFFFFF,nil,true)
+        ui.addTextArea(28,"<p align='center'><b><font size='23' color='#37C68E'>Escoge un modo</font></b></a></p>",final,201,125,400,180,0,0,0,true)  
+        ui.addTextArea(29," ",final,240,175,100,90,0x141816,0xFFFFFF,nil,true)
+        ui.addTextArea(30," ",final,460,175,100,90,0x141816,0xFFFFFF,nil,true)
+        ui.addTextArea(31,"<p align='center'><a href='event:modoestandar'><b><font size='17' color='#EC1616'>Modo <br>Estandar</font></b></a></p>",final,240,195,100,90,0,0,0,true)
+        ui.addTextArea(32,"<p align='center'><a href='event:modocrono'><b><font size='17' color='#EC1616'>Modo <br>Crono</font></b></a></p>",final,460,195,100,90,0,0,0,true)
+      end
+  end 
   end
                     
   function eventKeyboard(name,key,down,x,y)
 
     if key==79 then
-      eventChatCommand(name,"settings")
-      sett=sett+1
+      eventChatCommand(name,"settings")      
     end
            
     if dios >=99 and not modoCrono then
@@ -455,38 +463,32 @@
             
     if key==76 then     
       eventChatCommand(name,"lea")
-      lea=lea+1
     end
 
     if key==77 then
       eventChatCommand(name,"modos")
     end
-            
-    if lea>=2 then
-      ui.removeTextArea(99,name)
-      lea=0
-    end
-            
-    if sett==2 then
-      ui.removeTextArea(95,name)
-      sett=0
-    end                               
   end                 
       
   function eventNewPlayer(name)
     players[name] = {
                 score = 0,
                 helpid=1,
-                nombre=name
+                nombre=name,
+                opened={
+                  help=false;
+                  leader=false;
+                  sett=false;
+                  modos=false;
+                        }
                     }
     ui.addTextArea(10,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,779,387,17,12,0x030200,0x2a291a,nil,true)
-    ui.addTextArea(11,"<p align='center'><a href='event:help'><b><font color='#FFFFFF'>?</font></b></a></p>",name,780,383,16,16,0,0,0,true)
-           
+    ui.addTextArea(11,"<p align='center'><a href='event:help'><b><font color='#FFFFFF'>?</font></b></a></p>",name,780,383,16,16,0,0,0,true)           
     for name in pairs(tfm.get.room.playerList) do
-   		for keys, k in pairs({32, 72, 76,79,77}) do
-       	tfm.exec.bindKeyboard(name, k, true, true)
-    	end
-	  end
+      for keys, k in pairs({32, 72, 76,79,77}) do
+        tfm.exec.bindKeyboard(name, k, true, true)
+      end
+    end
   end
         
   function darscore(name)
@@ -500,20 +502,20 @@
       if cannonesespeciales then
         if cambiocannones<=2 then
           cannonesespeciales=false
-          actualizarcuadro()
+          actualizarcuadro(name)
           cambiocannones=cambiocannones+1
         else
-        ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)
+        ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,2,387,270,12,0x171616,0x772727,nil,true)
+        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",name,2,383,270,16,0,0,0,true)
         end   
       elseif cannonesespeciales==false then
         if cambiocannones<=2 then
           cannonesespeciales=true
-          actualizarcuadro()
+          actualizarcuadro(name)
           cambiocannones=cambiocannones+1
         else
-        ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",final,2,383,270,16,0,0,0,true)                                
+        ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,2,387,270,12,0x171616,0x772727,nil,true)
+        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",name,2,383,270,16,0,0,0,true)                                
         end 
       end
     end
@@ -526,7 +528,7 @@
           ui.removeTextArea(id,name)
           ui.removeTextArea(6969+id,name)
           ui.removeTextArea(7979+id,name)
-          help=0
+          players[name].opened.help=false
         end
  
       elseif callback=="acercade"  then
@@ -552,9 +554,9 @@
           ui.addTextArea(26,"<p align='center'><b>Vuelve a escoger porfavor.</b></a></p>",final,2,383,270,16,0,0,0,true)    
         else    
           primeraEjecucion=false
-     	    for id=25,33 do
+          for id=25,33 do
             ui.removeTextArea(id,final)
-     	    end        
+          end        
           eventChatCommand(name,"modoestandar")
         end
       
@@ -563,7 +565,7 @@
           ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
           ui.addTextArea(26,"<p align='center'><b>Vuelve a escoger porfavor.</b></a></p>",final,2,383,270,16,0,0,0,true)    
         else
-  		    primeraEjecucion=false
+          primeraEjecucion=false
           for id=25,33 do
           ui.removeTextArea(id,final)
           end
@@ -571,8 +573,8 @@
         eventChatCommand(name,"modocrono")
   
       elseif callback=="cerrar" then
-        abierto=false
-   	    for id=25,33 do
+        players[name].opened.modos=false
+        for id=25,33 do
           ui.removeTextArea(id,final)
         end   
       end
@@ -601,9 +603,9 @@
         bool=true                        
         suprimircannones()          
         print("<font color='#24CBC5'>"..name.."</font> ha sobrevivido por <ROSE>"..TiempoTranscurrido.." sg</ROSE>  en el mapa <font color='#6DD6A9'>@"..codigoMapa.."</font>")
-       	ui.addTextArea(7, "<p align='center'><font size='14' color='#24CBC5'><b>"..name.. "</font><N> ha sobrevivido por "..TiempoTranscurrido.." segundos wow!" , final , 120, 30, 550, 23,0x030303,0x030303)
+        ui.addTextArea(7, "<p align='center'><font size='14' color='#24CBC5'><b>"..name.. "</font><N> ha sobrevivido por "..TiempoTranscurrido.." segundos wow!" , final , 120, 30, 550, 23,0x030303,0x030303)
         ui.addTextArea(22,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
-				ui.addTextArea(23,"<p align='center'><b>escribe el comando <font color='#EFF0EE'>!redo</font> para reiniciar</b></a></p>",final,2,383,270,16,0,0,0,true)       
+        ui.addTextArea(23,"<p align='center'><b>escribe el comando <font color='#EFF0EE'>!redo</font> para reiniciar</b></a></p>",final,2,383,270,16,0,0,0,true)       
         tfm.exec.respawnPlayer(name)
       end     
     end
@@ -646,28 +648,28 @@
       tfm.exec.giveCheese(name)
       tfm.exec.playerVictory(name)
     end
+    winned= false; Wait= 0 
     if not modoIndividual and not modoCrono then
       ganadorTotal()
-    end
-    winned= false; Wait= 0             
+    end               
 end 
  
   function ganadorTotal()
     if numeroRonda==8 then
-    	for name, player in pairs(tfm.get.room.playerList) do
+      for name, player in pairs(tfm.get.room.playerList) do
             playerPoint = players[name].score
             winer[name] = playerPoint   
-    	end
-    	--dar ganador total de todas las rondas    
-    	local key = next(winer)
-    	local max = winer[key]
-        	for k, v in pairs(winer) do
-            	if winer[k] > max then
-                	key, max = k, v
-            	end
-        	end
-    	campeon = key, max                              
-    	rondaFinal = true;  bool = true                                         
+      end
+      --dar ganador total de todas las rondas    
+      local key = next(winer)
+      local max = winer[key]
+          for k, v in pairs(winer) do
+              if winer[k] > max then
+                  key, max = k, v
+              end
+          end
+      campeon = key, max                              
+      rondaFinal = true;  bool = true; winned=true                                        
     end
   end   
  
@@ -682,4 +684,3 @@ end
   verjugadores()
   darscore() 
   EjecutarMapa()
-
