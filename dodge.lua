@@ -35,19 +35,24 @@
     maps={7813846,7813847,7814210,7815341,7814864,7814091,7816146,7816244}
     cannones={17,1701,1702,1703,1705,1706,1707,1708,1709,1710,1711,1712,1714,1715,1718,1719,1720,1721}
     specialcannons={ 
-    {"Star of death", "1502f9cb9a8"};    {"Balanced", "149af0fdbf7"};  {"Plate spike", "149af0ef041"};   {"Diamon ore", "149af129a4c"};
-    --{"idontknow", "165ee55ef37"};
-    {"baffbot", "149af1482f5"};    {"girly", "149aeabeff6"};    {"disturbed eye", "149aeaab097"};    {"cow", "149af1414ae"};    {"magma", "149aea9f2cc"};    {"demon", "149aeab32ec"};
-    --{"batty", "1755667fcc7"};
-    {"shymer", "175c88cf5bd"};    {"contest", "149aeac1f50"};
-    --{"spiky", "149af145222"};
-    {"sweet", "149aeac07ee"};    {"cookie", "149af11f084"};    {"drop the boss", "149af134d03"};    {"troll", "149af11af76"};    {"venom", "16ebc8b35de"};    {"nocturnal", "17045bccc54"};    {"cardistry", "169550c8e43"};    {"sharingan", "16943972c4a"};    {"lollipop", "1693eb4fc8b"};    {"oblivion", "172576581a4"};   {"energon", "166216a1a33"};   {"metal plates", "1660c17bb0e"};   {"bronze", "149af130a30"};   {"silver", "149af12c2d6"};    {"vermilion", "1705dfa253d"};
-   --{"warrior", "175c83a20b9"};
-    {"target", "175db7c6a9a"};    {"water", "1660c65740f"};    {"air", "1660c5db325"};    {"flame", "1660c4bf1a4"};    {"nature", "149af13faa2"};    {"recycle", "149aeaaf47a"};    {"vine", "149af122bb3"};    {"music", "149af146cb6"};
-                    }
-       
-    cannonesespeciales = false;mostrarTitulo=true;primeraEjecucion=true;rondaFinal=false;bool=false;modoIndividual=false;modoCrono=false;muertoJugadorCrono=false;   
+      deathmatch={ --creditos a los desarrolladores de deathmatch
+                  {"Star of death", "1502f9cb9a8"};    {"Balanced", "149af0fdbf7"};  {"Plate spike", "149af0ef041"};   {"Diamon ore", "149af129a4c"};    {"baffbot", "149af1482f5"};    {"girly", "149aeabeff6"};    {"disturbed eye", "149aeaab097"};    {"cow", "149af1414ae"};    {"magma", "149aea9f2cc"};    {"demon", "149aeab32ec"};   {"shymer", "175c88cf5bd"};    {"contest", "149aeac1f50"};    {"sweet", "149aeac07ee"};    {"cookie", "149af11f084"};    {"drop the boss", "149af134d03"};    {"troll", "149af11af76"};    {"venom", "16ebc8b35de"};    {"nocturnal", "17045bccc54"};    {"cardistry", "169550c8e43"};    {"sharingan", "16943972c4a"};    {"lollipop", "1693eb4fc8b"};    {"oblivion", "172576581a4"};   {"energon", "166216a1a33"};   {"metal plates", "1660c17bb0e"};   {"bronze", "149af130a30"};   {"silver", "149af12c2d6"};    {"vermilion", "1705dfa253d"};      {"target", "175db7c6a9a"};    {"water", "1660c65740f"};    {"air", "1660c5db325"};    {"flame", "1660c4bf1a4"};    {"nature", "149af13faa2"};    {"recycle", "149aeaaf47a"};    {"vine", "149af122bb3"};    {"music", "149af146cb6"};
+                 },
+      ffarace={  -- creditos a los desarrolladores de ffarace
+                "1725661e561","17256629950","172566b1f35","17256648ca4","1725660c3a3","1725664047b","1725663bf5c","1725662f803","1725660a1bf","1725660878e","17256614f72","1725660dd88","17256627e1f","1725662627f","17256646dac","1725661c3f7","1725663e5be","1725662b1d7","17256658589"
+              }
+                   }
+
+    ffaracecannons=false;deathmatchcannons = false;mostrarTitulo=true;primeraEjecucion=true;rondaFinal=false;bool=false;modoIndividual=false;modoCrono=false;muertoJugadorCrono=false;   
     countdown = 0;  playersAlive=0; count = 0;diagonal=0;mins=0; seconds=0;wait = 0;numeroRonda=1;cambiocannones=0;
+
+    function shootcannonspecial(idcannonn)
+      if deathmatchcannons then
+        tfm.exec.addImage(""..specialcannons.deathmatch[cannD][2]..".png","#" .. idcannonn,-16,-16,nil)
+      elseif ffaracecannons then
+        tfm.exec.addImage(""..specialcannons.ffarace[cannF]..".png","#" .. idcannonn,-16,-16,nil)
+      end   
+    end
 
     function cerrartodo(name)
       ui.removeTextArea(95,name); ui.removeTextArea(99,name);
@@ -56,9 +61,11 @@
     end
 
     function actualizarcuadro(namee)
-      local textcannonesespeciales = "<font color='#B1B0B0' size='13' align='center' face='Ubuntu'>  Cañones Deathmatch     </font>"
-      local rand_can_txt = cannonesespeciales and "<font color='#63da0b' size='15' align='center' face='Ubuntu'>☑</font>" or "<font color='#727272' size='15' align='center' face='Ubuntu'>☐</font>"
-      settings = "<p align='center'><font color='#ffffff' size='13' align='center' face='Ubuntu'>Settings</font></p><br/>"..textcannonesespeciales.."<a href='event:cannonesespeciales'>"..rand_can_txt.."</a><br>"
+      local textcannondeathmatch = "<font color='#B1B0B0' size='13' align='center' face='Ubuntu'>  Cañones Deathmatch     </font>"
+      local textcannonffarace = "<font color='#B1B0B0' size='13' align='center' face='Ubuntu'>  Cañones FFArace           </font>"
+      local rand_can_txt = deathmatchcannons and "<font color='#63da0b' size='15' align='center' face='Ubuntu'>☑</font>" or "<font color='#727272' size='15' align='center' face='Ubuntu'>☐</font>"
+      local rand_can_txt2 = ffaracecannons and "<font color='#63da0b' size='15' align='center' face='Ubuntu'>☑</font>" or "<font color='#727272' size='15' align='center' face='Ubuntu'>☐</font>"
+      settings = "<p align='center'><font color='#ffffff' size='13' align='center' face='Ubuntu'>Settings</font></p><br/>"..textcannondeathmatch.."<a href='event:deathmatchcannons'>"..rand_can_txt.."</a><br>"..textcannonffarace.."<a href='event:ffaracecannons'>"..rand_can_txt2.."</a>"
       for name, player in pairs(tfm.get.room.playerList) do
         if players[name].opened.sett then  ui.addTextArea(95, settings, name, 280,145, 210, 110, 0x171616, 0x555555, 0.9, true)   end
       end
@@ -66,7 +73,7 @@
 
     function generarCannonId()
        -- genera numero aleatorio para la posicion dentro de specialcannons     
-       cann = math.random (1,35)    
+       cannD = math.random (1,35); cannF=math.random(1,19)
        -- genera el id del cañon para los cañones estandar               
        local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
        local picked_value = cannones[value] -- Pick value from table
@@ -76,11 +83,11 @@
     function suprimircannones()
       for idCannon, object in pairs(tfm.get.room.objectList) do
             table.insert(IDList, idCannon)
-        end
-        --eliminar cañones
-        for i, idCannon in pairs(IDList) do
-            tfm.exec.removeObject(idCannon)
-        end
+      end
+      --eliminar cañones
+      for i, idCannon in pairs(IDList) do
+        tfm.exec.removeObject(idCannon)
+      end
     end
 
     function verjugadores()
@@ -106,37 +113,31 @@
     end
     
     local Load= function(time, remaining)
-   
+      
       TiempoTranscurrido=time/1000;count = count + 1; diagonal = diagonal + math.random(0, 4)
- 
+
       if not primeraEjecucion then
             
         if not bool and not rondaFinal and time >= 6000 and time <=50000 then
           shootedcannon= tfm.exec.addShamanObject(idCannon, 820, math.random(150,380), math.random(-135, -45), 0, 0, false)
-          if cannonesespeciales then
-            tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon,-16,-16,nil)
-          end
+          shootcannonspecial(shootedcannon)
         end
                     
         if not bool and not rondaFinal and time >= 8000 then
           if count > 10 and TiempoTranscurrido <= 53 then
             shootedcannon1 = tfm.exec.addShamanObject(idCannon, -10, 200, 180)
-            if cannonesespeciales then
-              tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon1,-16,-16,nil)
-            end
+            shootcannonspecial(shootedcannon1)
             count = 0
           elseif diagonal >= 14 then
             shootedcannon2 = tfm.exec.addShamanObject(idCannon, 110, 100, math.random(-160, -120))
-            if cannonesespeciales then
-              tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon2,-16,-16,nil)
-            end
+           shootcannonspecial(shootedcannon2)
             diagonal = 0
           end
           --modio dios
           if math.floor(TiempoTranscurrido) == 43 then
             tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font> <N> Modo Dios En Unos Segundos.... ... .. .")
           end
-          if math.floor(TiempoTranscurrido) == 53 then
+          if TiempoTranscurrido>= 53 and TiempoTranscurrido <=53.5 then
             generarCannonId()
           end
           if TiempoTranscurrido >= 53 and not modoCrono then
@@ -148,19 +149,15 @@
             end
             shootedcannon4 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
             shootedcannon5 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
-            if cannonesespeciales then
-            tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
-            tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
-            end
+              shootcannonspecial(shootedcannon4)
+              shootcannonspecial(shootedcannon5)
           end
           if TiempoTranscurrido >= 53 and  modoCrono then
             tfm.exec.setUIMapName("<YELLOW>#dodge by factral              <N>Modo: <V>Crono")
             shootedcannon4 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 270)
             shootedcannon5 = tfm.exec.addShamanObject(idCannon, 840, math.random()*350, 225)
-            if cannonesespeciales then
-              tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon4,-16,-16,nil)
-              tfm.exec.addImage(""..specialcannons[cann][2]..".png","#" .. shootedcannon5,-16,-16,nil)
-            end
+              shootcannonspecial(shootedcannon4)
+              shootcannonspecial(shootedcannon5)
           end
         end
                 
@@ -424,13 +421,9 @@
                     
   function eventKeyboard(name,key,down,x,y)
       
-    if TiempoTranscurrido >=53 and not modoCrono then
-      if players[name].jump >= 5 then
-        if key == 32 then
+    if (key == 32 and TiempoTranscurrido >=53 and not modoCrono and players[name].jump >= 5) then
           tfm.exec.movePlayer(name,0,0,true,0,-60,false)
           players[name].jump = 0
-        end
-      end
     end
             
     if key == 72 then
@@ -474,19 +467,44 @@
   end      
     
   function eventTextAreaCallback(id,name,callback)
-    if callback=="cannonesespeciales" then
-      if cannonesespeciales then
+    if callback=="deathmatchcannons" then
+      if deathmatchcannons then
         if cambiocannones<=2 then
-          cannonesespeciales=false
+          deathmatchcannons=false
           actualizarcuadro(name)
           cambiocannones=cambiocannones+1
         else
         ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,2,387,270,12,0x171616,0x772727,nil,true)
         ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",name,2,383,270,16,0,0,0,true)
         end   
-      elseif cannonesespeciales==false then
+      elseif deathmatchcannons==false then
         if cambiocannones<=2 then
-          cannonesespeciales=true
+          ffaracecannons=false; cannons=deathmatch;
+          deathmatchcannons=true
+          actualizarcuadro(name)
+          cambiocannones=cambiocannones+1
+        else
+        ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,2,387,270,12,0x171616,0x772727,nil,true)
+        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",name,2,383,270,16,0,0,0,true)                                
+        end 
+      end
+    end
+
+
+    if callback=="ffaracecannons" then
+      if ffaracecannons then
+        if cambiocannones<=2 then
+          ffaracecannons=false
+          actualizarcuadro(name)
+          cambiocannones=cambiocannones+1
+        else
+        ui.addTextArea(101,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",name,2,387,270,12,0x171616,0x772727,nil,true)
+        ui.addTextArea(102,"<p align='center'><b>Espera al siguiente mapa.</b></a></p>",name,2,383,270,16,0,0,0,true)
+        end   
+      elseif ffaracecannons==false then
+        if cambiocannones<=2 then
+          deathmatchcannons=false; cannons=ffarace;
+          ffaracecannons=true
           actualizarcuadro(name)
           cambiocannones=cambiocannones+1
         else
