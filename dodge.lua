@@ -48,8 +48,9 @@
 
     function shootcannonspecial(idcannonn)
       if deathmatchcannons then
-        tfm.exec.addImage(""..specialcannons.deathmatch[cannD][2]..".png","#" .. idcannonn,-16,-16,nil)
-      elseif ffaracecannons then
+        tfm.exec.addImage(""..specialcannons.deathmatch[cannD][2]..".png","#" .. idcannonn,-16,-16,nil) 
+      end
+      if ffaracecannons then
         tfm.exec.addImage(""..specialcannons.ffarace[cannF]..".png","#" .. idcannonn,-16,-16,nil)
       end   
     end
@@ -73,11 +74,10 @@
 
     function generarCannonId()
        -- genera numero aleatorio para la posicion dentro de specialcannons     
-       cannD = math.random (1,35); cannF=math.random(1,19)
+       cannD = math.random (1,#specialcannons.deathmatch); cannF=math.random(1,#specialcannons.ffarace)
        -- genera el id del cañon para los cañones estandar               
        local value = math.random(1,#cannones) -- Get random number with 1 to length of table.
-       local picked_value = cannones[value] -- Pick value from table
-       idCannon=picked_value
+       idCannon = cannones[value] -- Pick value from table
     end
 
     function suprimircannones()
@@ -103,27 +103,24 @@
           tfm.exec.setGameTime(1)
         end        
         if not primeraEjecucion then
-            local valuee = math.random(1,#maps) -- Get random number with 1 to length of table.
-            local picked_valuee = maps[valuee] -- Pick value from table
-            codigoMapa = picked_valuee
-            tfm.exec.newGame(codigoMapa)
-            bool = false; countdown = 0;cambiocannones=0;ui.removeTextArea(101,final);ui.removeTextArea(102,final)
+            tfm.exec.newGame(maps[math.random(#maps)])
+            bool = false; countdown = 0;cambiocannones=0;count=0;diagonal=0;ui.removeTextArea(101,final);ui.removeTextArea(102,final)
             for name, player in pairs(tfm.get.room.playerList) do players[name].jump = 5  end
         end
     end
     
     local Load= function(time, remaining)
-      
-      TiempoTranscurrido=time/1000;count = count + 1; diagonal = diagonal + math.random(0, 4)
 
+      TiempoTranscurrido=time/1000;
       if not primeraEjecucion then
             
-        if not bool and not rondaFinal and time >= 6000 and time <=50000 then
+        if not bool and not rondaFinal and TiempoTranscurrido >= 6 and TiempoTranscurrido <=50 then
           shootedcannon= tfm.exec.addShamanObject(idCannon, 820, math.random(150,380), math.random(-135, -45), 0, 0, false)
           shootcannonspecial(shootedcannon)
         end
                     
-        if not bool and not rondaFinal and time >= 8000 then
+        if not bool and not rondaFinal and TiempoTranscurrido >= 8 then
+          diagonal = diagonal + math.random(0, 4);count = count + 1; 
           if count > 10 and TiempoTranscurrido <= 53 then
             shootedcannon1 = tfm.exec.addShamanObject(idCannon, -10, 200, 180)
             shootcannonspecial(shootedcannon1)
@@ -184,7 +181,7 @@
  
           if rondaFinal and countdown>=4 then              
             tfm.exec.setUIMapName("<YELLOW>#dodge by factral          <N>Modo: <V>Estandar")
-            if time >= 24000 then
+            if TiempoTranscurrido >= 24 then
               reiniciartodo()
             end
           end                                                         
@@ -206,7 +203,7 @@
           ui.addTextArea(3, "<BR><B><p align='center'><font face='Soopafresh' size='120' color='#EAA118'><BR>"..game, p, 5, -35, 790, 400, 1, 1, 0.0, false)
           ui.addTextArea(4, "<BR><B><p align='center'><font face='Soopafres' size='120' color='#000000'><BR>"..game, p, 5, -25, 790, 400, 1, 1, 0.0, false)
           ui.addTextArea(5, "<BR><B><p align='center'><font face='Soopafresh' size='120' color='#E7DB25'><BR>"..game, p, 5, -30, 790, 400, 1, 1, 0.0, false)
-        elseif mostrarTitulo and TiempoTranscurrido >=5 then
+        elseif mostrarTitulo and TiempoTranscurrido >=5 and TiempoTranscurrido <=7 then
           for i = 1,5 do   ui.removeTextArea(i, p)   end
           mostrarTitulo=false
         end
@@ -378,8 +375,8 @@
       ui.addTextArea(13,"<p align='left'><a href='event:modos'><b>Modos</b></a></p>",name,149,152,90,16,0x231414,0x3e5d2e,nil,true)
       ui.addTextArea(14,"<p align='left'><a href='event:comandos'><b>Comandos</b></a></p>",name,149,182,90,16,0x231414,0x3e5d2e,nil,true)
       ui.addTextArea(15,"<p align='left'><a href='event:creditos'><b>Creditos</b></a></p>",name,149,212,90,16,0x231414,0x3e5d2e,nil,true)
-      --contenido de ccada event
-      ui.addTextArea(16,box("acercade")[players[name].helpid],name,230,70,380,280,0x1d1b1b,0x242525,nil,true) 
+      --contenido de cada pestaña, de forma predefinida esta el acercade
+      ui.addTextArea(16,box("acercade")[1],name,230,70,380,280,0x1d1b1b,0x242525,nil,true) 
       --boton para cerrar
       ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)                      
     
@@ -441,7 +438,6 @@
   function eventNewPlayer(name)
     players[name] = {
                 score = 0,
-                helpid=1,
                 jump=5,
                 nombre=name,
                 opened={
@@ -524,23 +520,22 @@
         end
  
       elseif callback=="acercade"  then
-        ui.updateTextArea(16,box("acercade")[players[name].helpid],name)
+        ui.updateTextArea(16,box("acercade")[1],name)
         ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)
  
       elseif callback=="modos"  then
-        ui.updateTextArea(16,box("modos")[players[name].helpid],name)
+        ui.updateTextArea(16,box("modos")[1],name)
         ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)
  
       elseif callback=="comandos"  then
-        ui.updateTextArea(16, box("comandos")[players[name].helpid],name)
+        ui.updateTextArea(16, box("comandos")[1],name)
         ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)
  
       elseif callback=="creditos"  then
-        ui.updateTextArea(16, box("creditos")[players[name].helpid],name)
+        ui.updateTextArea(16, box("creditos")[1],name)
         ui.addTextArea(17,"<p align='center'><font size='25'><a href='event:close'><b>X</b></a></p>",name,565,72,53,43,0,0,0,true)
 
       elseif callback=="modoestandar" then  
-        crono=false
         if TiempoTranscurrido*1000<=3000 then
           ui.addTextArea(25,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
           ui.addTextArea(26,"<p align='center'><b>Vuelve a escoger porfavor.</b></a></p>",final,2,383,270,16,0,0,0,true)    
@@ -576,25 +571,20 @@
     playersAlive=playersAlive-1
     
     if not modoCrono then
-      if playersAlive  == 1 and not rondaFinal then
-        bool = true;   winned= true
+      if (playersAlive  == 0 or playersAlive == 1) and not rondaFinal then
+        bool = true;   
         tfm.exec.setGameTime(5)
         tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font>  <N>Cambiando De Mapa.....")                
         suprimircannones()
       end
-            
-      if playersAlive  == 0 and not rondaFinal     then
-        bool = true
-        tfm.exec.setGameTime(5)
-        tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font>  <N>Cambiando De Mapa.....")                 
-        suprimircannones()
+      if playersAlive  == 1 and not rondaFinal then
+        winned= true 
       end
     else
       if playersAlive  == 0 and not rondaFinal then
-        muertoJugadorCrono=true
-        bool=true                        
+        muertoJugadorCrono=true; bool=true                        
         suprimircannones()          
-        print("<font color='#24CBC5'>"..name.."</font> ha sobrevivido por <ROSE>"..TiempoTranscurrido.." sg</ROSE>  en el mapa <font color='#6DD6A9'>@"..codigoMapa.."</font>")
+        print("<font color='#24CBC5'>"..name.."</font> ha sobrevivido por <ROSE>"..TiempoTranscurrido.." sg</ROSE>  en el mapa <font color='#6DD6A9'>"..tfm.get.room.currentMap.."</font>")
         ui.addTextArea(7, "<p align='center'><font size='14' color='#24CBC5'><b>"..name.. "</font><N> ha sobrevivido por "..TiempoTranscurrido.." segundos wow!" , final , 120, 30, 550, 23,0x030303,0x030303)
         ui.addTextArea(22,"<p align='center'><b><font color='#EB1D51'></font></b></a></p>",final,2,387,270,12,0x171616,0x772727,nil,true)
         ui.addTextArea(23,"<p align='center'><b>escribe el comando <font color='#EFF0EE'>!redo</font> para reiniciar</b></a></p>",final,2,383,270,16,0,0,0,true)       
@@ -661,7 +651,7 @@ end
               end
           end
       campeon = key, max                              
-      rondaFinal = true;  bool = true; winned=true                                        
+      rondaFinal = true;  bool = true;                                        
     end
   end   
  
