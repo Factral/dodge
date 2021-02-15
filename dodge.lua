@@ -3,7 +3,7 @@
     
     tfm.exec.disableAutoNewGame(true); tfm.exec.disableAutoShaman(true)
     tfm.exec.disableAfkDeath(true); tfm.exec.disableAutoScore(true)
-    tfm.exec.disableAutoTimeLeft(true); tfm.exec.disableMortCommand() 
+    tfm.exec.disableAutoTimeLeft(true); 
     tfm.exec.disableMinimalistMode(); tfm.exec.disablePhysicalConsumables()
     tfm.exec.newGame(7818703);   tfm.exec.setGameTime(1)
 
@@ -28,7 +28,7 @@
                   }
             }
           }
-    
+    nombresempate = {}
     players = {}
     winer = {}
     IDList = {}
@@ -44,7 +44,7 @@
                    }
 
     ffaracecannons=false;deathmatchcannons = false;mostrarTitulo=true;primeraEjecucion=true;rondaFinal=false;bool=false;modoIndividual=false;modoCrono=false;muertoJugadorCrono=false;   
-    countdown = 0;  playersAlive=0; count = 0;diagonal=0;mins=0; seconds=0;wait = 0;numeroRonda=1;cambiocannones=0;
+    countdown = 0;  count = 0;diagonal=0;mins=0; seconds=0;wait = 0;numeroRonda=1;cambiocannones=0;
 
     function shootcannonspecial(idcannonn)
       if deathmatchcannons then
@@ -160,8 +160,9 @@
                
           --dar ganador al final de el cumulo de rondas               
           if rondaFinal and countdown ==3 then
+            ui.removeTextArea(7,name);  empate=false;
             tfm.exec.newGame(7815400)                            
-            ui.addTextArea(6, "<p align='center'><font color='#ffe300' size='14'><b>".. campeon.. "</font><N> Ha ganado!" , final , 200, 30, 400, 23,0x373737,0x373737)
+            ui.addTextArea(6, "<p align='center'><font color='#ffe300' size='14'><b>"..campeon.. "</font><N> Ha ganado!" , final , 200, 30, 400, 23,0x373737,0x373737)
             tfm.exec.setGameTime(25)                
             for i=1, 50 do
               tfm.exec.displayParticle(math.random(21,24), math.random(1,800), 20, math.random(-20,20)/100, math.random(10,1000)/100, 0, 0, nil)
@@ -169,11 +170,8 @@
             tfm.exec.movePlayer(campeon,400,210)
           end
  
-          if rondaFinal and countdown>=4 then              
-            tfm.exec.setUIMapName("<YELLOW>#dodge by factral          <N>Modo: <V>Estandar")
-            if TiempoTranscurrido >= 24 then
+          if rondaFinal and TiempoTranscurrido>=24 then         
               reiniciartodo()
-            end
           end                                                         
         end
                 
@@ -222,9 +220,10 @@
     end   
          
   function reiniciartodo()
-    numeroRonda=1;   bool=false;    rondaFinal=false
+    numeroRonda=1;   bool=false;    rondaFinal=false; empate=false;
     for name, player in pairs(tfm.get.room.playerList) do
        players[name].score = 0
+       nombresempate[name] = false
     end
     EjecutarMapa();  darscore();  ui.removeTextArea(6,final)    
   end
@@ -385,8 +384,7 @@
     if (key == 32 and TiempoTranscurrido >=53 and not modoCrono and players[name].jump >= 5) then
           tfm.exec.movePlayer(name,0,0,true,0,-60,false)
           players[name].jump = 0
-    end
-            
+    end    
     if key == 72 then
       eventChatCommand(name,"help")        
     elseif key==76 then     
@@ -416,6 +414,9 @@
       for keys, k in pairs({32, 72, 76,79,77}) do
         tfm.exec.bindKeyboard(name, k, true, true)
       end
+    end
+    if primeraEjecucion then
+        eventChatCommand(name,"modos")
     end
   end
         
@@ -491,7 +492,7 @@
     playersAlive=playersAlive-1
     
     if not modoCrono then
-      if (playersAlive  == 0 or playersAlive == 1) and not rondaFinal then
+      if ((playersAlive  == 0 and modoIndividual) or playersAlive == 1) and not rondaFinal then
         bool = true;   
         tfm.exec.setGameTime(5)
         tfm.exec.setUIMapName("<YELLOW>#dodge by factral  <font color='#5c5474'>|</font>  <N>Cambiando De Mapa.....")                
@@ -530,6 +531,20 @@
       modoIndividual = false
     end
 
+    if empate then
+          tfm.exec.setUIMapName("<YELLOW>#dodge by factral     <N>Ronda: <V>Desempate      <N>Modo: <V>Estandar")
+          ui.addTextArea(7, "<p align='center'><font size='14' color='#24CBC5'><b>** Ronda de desempate **" , final , 240, 20, 300, 23,0x030303,0x030303)
+          for name in pairs(tfm.get.room.playerList) do
+            if not nombresempate[name] then
+              tfm.exec.killPlayer(name)
+            end     
+          end
+    end
+
+    if rondaFinal then
+      tfm.exec.setUIMapName("<YELLOW>#dodge by factral          <N>Modo: <V>Estandar")
+    end
+
     playersAlive=0
     for n,p in pairs(tfm.get.room.playerList) do
       playersAlive=playersAlive+1
@@ -542,40 +557,64 @@
     
   function finish()
     numeroRonda=numeroRonda+1
-    for name, player in pairs(tfm.get.room.playerList) do
-      if not player.isDead then
-        players[name].score = players[name].score + 1
-        tfm.exec.setPlayerScore(name, 5, true)
+    if playersAlive==0 then
+          campeon="todos muertos, nadie"  --mensaje predefinido cuando todos los jugadores empatados mueren
+    else
+      for name, player in pairs(tfm.get.room.playerList) do 
+        if not player.isDead then
+          players[name].score = players[name].score + 1
+          tfm.exec.setPlayerScore(name, 5, true)
+          if empate then
+           campeon=name
+          end
+        end
+        tfm.exec.giveCheese(name)
+        tfm.exec.playerVictory(name)
       end
-      tfm.exec.giveCheese(name)
-      tfm.exec.playerVictory(name)
     end
     winned= false; Wait= 0 
     if not modoIndividual and not modoCrono then
       ganadorTotal()
     end               
-end 
+  end 
  
   function ganadorTotal()
-    if numeroRonda==8 then
-      for name, player in pairs(tfm.get.room.playerList) do
-            playerPoint = players[name].score
-            winer[name] = playerPoint   
-      end
-      --dar ganador total de todas las rondas    
-      local key = next(winer)
-      local max = winer[key]
-          for k, v in pairs(winer) do
-              if winer[k] > max then
-                  key, max = k, v
-              end
+    if numeroRonda>=8 then
+      if empate then
+        rondaFinal = true; empate=false;
+      else
+        local max = 0
+        for name in pairs(tfm.get.room.playerList) do
+          nombresempate[name]=false
+          if players[name].score > max then
+            key, max = name, players[name].score
           end
-      campeon = key, max                              
-      rondaFinal = true;  bool = true;                                        
+        end
+        campeon, highscore = key, max
+        buscarempate()
+      end    
+      bool = true;                                 
+    end
+  end
+
+  function buscarempate()
+    contadorempate=0;    empate=false
+    for name in pairs(tfm.get.room.playerList) do
+      if players[name].score == highscore then 
+        nombresempate[name]=true
+        contadorempate=contadorempate+1    -- contador de los jugadores empatados para despues verificar si son mas de 2   
+      end
+    end
+    if contadorempate < 2 then
+      for name in pairs(tfm.get.room.playerList) do
+        nombresempate[name] = false
+      end
+      rondaFinal = true;
+    else  
+      empate=true
     end
   end   
  
   table.foreach(tfm.get.room.playerList, eventNewPlayer)
-  eventChatCommand(nil,"modos")
   verjugadores()
   darscore() 
